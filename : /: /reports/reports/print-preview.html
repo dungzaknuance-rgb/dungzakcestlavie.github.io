@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DUNGZAK CESTLAVIE — Report Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  background: #0a0a0a;
+  color: #eaeaea;
+  font-family: 'Noto Serif KR', serif;
+  margin: 0;
+  padding: 0;
+}
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 10mm auto;
+  padding: 20mm;
+  background: #fff;
+  color: #111;
+  box-sizing: border-box;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+h1 {
+  text-align: center;
+  font-size: 24px;
+  color: #222;
+  margin-bottom: 10px;
+}
+h2 {
+  color: #444;
+  font-size: 18px;
+  margin-top: 20px;
+}
+p {
+  text-align: justify;
+  line-height: 1.7;
+  font-size: 14px;
+  margin: 8px 0;
+}
+.meta {
+  text-align: center;
+  color: #666;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+button {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: #ffd86b;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+@media print {
+  button { display: none; }
+  body { background: white; }
+  .page { box-shadow: none; margin: 0; }
+}
+</style>
+</head>
+<body>
+<button onclick="window.print()">🖨️ 인쇄 / PDF 저장</button>
+<div class="page" id="page"></div>
+
+<script>
+async function loadReport() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (!id) {
+    document.getElementById('page').innerHTML = '<p>⚠️ report ID가 없습니다.</p>';
+    return;
+  }
+  try {
+    const res = await fetch('../data/reports.json');
+    const data = await res.json();
+    const report = data.reports.find(r => r.id === id);
+    if (!report) {
+      document.getElementById('page').innerHTML = `<p>⚠️ Report ${id}를 찾을 수 없습니다.</p>`;
+      return;
+    }
+    document.title = `Report Preview — ${report.title_en}`;
+    render(report);
+  } catch (e) {
+    document.getElementById('page').innerHTML = '<p>데이터를 불러오는 중 오류가 발생했습니다.</p>';
+  }
+}
+
+function render(r) {
+  const page = document.getElementById('page');
+  page.innerHTML = `
+    <h1>${r.title_en}</h1>
+    <div class="meta">등작 燈酌 DUNGZAK CESTLAVIE · ${r.year || ''}</div>
+    <h2>${r.title_ko || ''}</h2>
+    <p>${r.abstract?.replace(/\n/g, '<br>') || '(내용 없음)'}</p>
+  `;
+}
+
+loadReport();
+</script>
+</body>
+</html>
