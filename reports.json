@@ -1,0 +1,132 @@
+{
+  "reports": [
+    {
+      "id": "dcar01",
+      "year": 2025,
+      "title_en": "On Light, Memory, and Being",
+      "title_ko": "빛, 기억, 존재에 대하여",
+      "series": "Aesthetic Reports",
+      "cover": "images/artworks/light-memory-1.jpg",
+      "abstract": "빛과 기억을 통해 존재의 회복을 탐구하는 첫 번째 미학 보고서. 등작의 회화 세계를 이론적으로 정립하며, 인간 감각의 본질을 다룬다.",
+      "sections": [
+        {"h": "I. Memory", "p": "기억은 존재의 근원이며, 예술은 그 기억의 재구성이다."},
+        {"h": "II. Light", "p": "빛은 언어 이전의 의식이며, 지각의 순수한 형태이다."},
+        {"h": "III. Being", "p": "존재의 복원은 예술의 윤리적 목적이자 인간의 내면적 귀환이다."}
+      ],
+      "audio": "",
+      "pdf": ""
+    },
+    {
+      "id": "dcar02",
+      "year": 2025,
+      "title_en": "The Restoration of Being",
+      "title_ko": "존재의 회복",
+      "series": "Aesthetic Reports",
+      "cover": "images/artworks/light-memory-2.jpg",
+      "abstract": "기억과 감각의 해체 이후, 존재가 어떻게 다시 살아나는가를 탐구하는 두 번째 보고서.",
+      "sections": [
+        {"h": "I. Origin", "p": "존재는 관계의 재구성을 통해 새롭게 태어난다."},
+        {"h": "II. Wound", "p": "상처는 인간을 감각하게 하는 윤리적 기원이다."},
+        {"h": "III. Restoration", "p": "예술은 인간성을 복원하는 정신적 기도이다."}
+      ],
+      "audio": "",
+      "pdf": ""
+    },
+    {
+      "id": "dcar03",
+      "year": 2025,
+      "title_en": "The Return of Humanity",
+      "title_ko": "인간성의 귀환",
+      "series": "Aesthetic Reports",
+      "cover": "images/artworks/light-memory-3.jpg",
+      "abstract": "기술 문명 속에서 인간 감정의 회복을 논하는 세 번째 미학 보고서.",
+      "sections": [
+        {"h": "I. Machine", "p": "기계는 인간의 감각을 복제하지만 영혼을 대체할 수 없다."},
+        {"h": "II. Ethics", "p": "예술의 목적은 인간적 감정의 윤리적 회복에 있다."},
+        {"h": "III. Prayer", "p": "기도는 예술적 행위의 내적 형태이다."}
+      ],
+      "audio": "",
+      "pdf": ""
+    },
+    {
+      "id": "dcar04",
+      "year": 2025,
+      "title_en": "The Rebirth of Mind",
+      "title_ko": "정신의 재탄생",
+      "series": "Aesthetic Reports",
+      "cover": "images/artworks/light-memory-4.jpg",
+      "abstract": "지각과 의식의 재조합을 통해 정신이 재탄생하는 과정을 탐구한다.",
+      "sections": [
+        {"h": "I. Cognition", "p": "체화된 인지는 예술의 감각적 사고와 연결된다."},
+        {"h": "II. Evolution", "p": "정신의 진화는 기억과 감정의 확장이다."},
+        {"h": "III. Light", "p": "빛의 초의식은 인간 정신의 새로운 가능성이다."}
+      ],
+      "audio": "",
+      "pdf": ""
+    },
+    {
+      "id": "dcar05",
+      "year": 2025,
+      "title_en": "The Metaconsciousness of Light",
+      "title_ko": "빛의 초의식",
+      "series": "Aesthetic Reports",
+      "cover": "images/artworks/light-memory-5.jpg",
+      "abstract": "빛을 의식의 확장된 언어로 해석하며, 초감각적 인식의 구조를 탐구한다.",
+      "sections": [
+        {"h": "I. Metaphor", "p": "빛은 의식의 메타포이며, 예술은 그 파동이다."},
+        {"h": "II. Expansion", "p": "의식은 감각의 경계를 넘을 때 확장된다."},
+        {"h": "III. Cosmos", "p": "우주는 인간의 내면적 빛의 거울이다."}
+      ],
+      "audio": "",
+      "pdf": ""
+    },
+    {
+      "id": "dcar06",
+      "year": 2025,
+      "title_en": "The Return of Being",
+      "title_ko": "존재의 귀환",
+      "series": "Aesthetic Reports",
+      "cover": "images/artworks/light-memory-6.jpg",
+      "abstract": "기억의 심연 속에서 존재가 다시 나타나는 회귀적 미학의 구조를 제시한다.",
+      "sections": [
+        {"h": "I. Time", "p": "시간은 존재의 파편을 다시 모으는 매개이다."},
+        {"h": "II. Perception", "p": "지각은 존재를 복원하는 감각적 언어이다."},
+        {"h": "III. Return", "p": "귀환은 동일함이 아니라 변형된 존재의 재등장이다."}
+      ],
+      "audio": "",
+      "pdf": ""
+    },
+    {
+      "id": "dcar07",
+      "year": 2025,
+      "title_en": "The Scars of Light",
+      "title_ko": "빛의 상흔",
+      "series": "Aesthetic Reports",
+      "cover": "images/artworks/light-memory-7.jpg",
+      "abstract": "기술 문명과 인간 감각의 충돌 속에서 남은 상흔과 회복의 미학을 다룬다.",
+      "sections": [
+        {"h": "I. Civilization", "p": "문명은 인간의 감각을 수치화하지만, 예술은 그 잔여를 구원한다."},
+        {"h": "II. Scar", "p": "상흔은 인간의 존재를 증명하는 감각적 흔적이다."},
+        {"h": "III. Light", "p": "빛은 상흔 위에 피어나는 새로운 존재의 기도이다."}
+      ],
+      "audio": "",
+      "pdf": ""
+    },
+    {
+      "id": "dcar08",
+      "year": 2025,
+      "title_en": "The Prayer of Humanity",
+      "title_ko": "인류의 기도",
+      "series": "Aesthetic Reports",
+      "cover": "images/artworks/light-memory-8.jpg",
+      "abstract": "모든 인간과 생명체를 위한 예술적 기도의 완성. DCAR 시리즈의 귀결점.",
+      "sections": [
+        {"h": "I. Unity", "p": "모든 존재는 하나의 빛으로 이어진다."},
+        {"h": "II. Responsibility", "p": "예술은 인간과 세계를 잇는 책임의 언어이다."},
+        {"h": "III. Prayer", "p": "기도는 예술의 마지막 언어이며, 존재의 회복이다."}
+      ],
+      "audio": "",
+      "pdf": ""
+    }
+  ]
+}
