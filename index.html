@@ -3,218 +3,147 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>등작 燈酌 DUNGZAK CESTLAVIE — Art Universe</title>
-
-<meta name="description" content="빛의 예술가 등작 燈酌 DUNGZAK CESTLAVIE — Art Universe">
+<title>등작 燈酌 DUNGZAK CESTLAVIE — Light Universe</title>
+<meta name="description" content="빛의 예술가 등작 燈酌 DUNGZAK CESTLAVIE — Light, Memory, and Being">
 <link rel="canonical" href="https://dungzak.art/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="DUNGZAK CESTLAVIE — Art Universe">
-<meta property="og:description" content="빛과 존재의 예술, 등작 燈酌 DUNGZAK CESTLAVIE">
+<meta property="og:title" content="등작 燈酌 DUNGZAK CESTLAVIE — Light Universe">
+<meta property="og:description" content="빛과 존재의 우주 — Art & Philosophy by DUNGZAK CESTLAVIE.">
 <meta property="og:url" content="https://dungzak.art/">
 <meta property="og:image" content="https://dungzak.art/og.jpg">
 <meta name="theme-color" content="#030b1a">
 <link rel="icon" href="/favicon.ico">
-
 <style>
-:root {
-  --gold:#f3c969; --light:#b7ccff; --muted:#97a3c0;
-  --max:1200px;
+:root{
+  --gold:#f3c969; --light:#b7ccff; --muted:#9fb0d8;
+  --panel:#081025; --panel2:#0c1330;
+  --fade:all .4s ease;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body {
+body{
+  font-family:'Noto Sans KR',system-ui,-apple-system,sans-serif;
   background:radial-gradient(circle at 50% 40%,#030b1a,#000);
-  color:#e6ecff; font-family:'Noto Sans KR',sans-serif;
-  overflow-x:hidden; line-height:1.6;
+  color:#e6ecff; overflow-x:hidden; line-height:1.6;
 }
-header {
-  position:fixed;top:0;width:100%;z-index:10;
-  backdrop-filter:blur(8px);
+canvas#waves{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.45;}
+header{
+  position:fixed;top:0;left:0;right:0;z-index:10;
   display:flex;justify-content:space-between;align-items:center;
-  padding:12px 32px;color:var(--light);
+  padding:12px 28px;color:var(--light);backdrop-filter:blur(8px);
 }
-header nav a {margin:0 12px;color:var(--light);text-decoration:none;}
-header nav a:hover {color:var(--gold);}
-#langToggle {cursor:pointer;font-weight:600;}
-section {padding:100px 20px;max-width:var(--max);margin:auto;text-align:center;}
-h1,h2,h3 {color:var(--gold);}
-p {color:var(--light);}
-.en {color:var(--muted);font-style:italic;}
-.hero {
-  height:100vh;display:flex;flex-direction:column;justify-content:center;
-  align-items:center;text-align:center;overflow:hidden;position:relative;
-}
-.hero::after {
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(circle at var(--x,50%) var(--y,40%),rgba(255,255,255,0.15),transparent 60%);
-  mix-blend-mode:overlay;animation:shine 8s infinite alternate;
-}
-@keyframes shine {0%{opacity:.2;}100%{opacity:.5;}}
-.poem {text-align:left;margin-top:20px;}
-.poem p {margin:4px 0;}
-.art-grid {
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;margin-top:30px;
-}
-.art-item {background:#050a1f;border-radius:6px;padding:10px;transition:.3s;}
-.art-item:hover {transform:scale(1.03);background:#0b1230;}
-.art-item img {width:100%;border-radius:4px;}
-.art-info {text-align:left;font-size:.9rem;margin-top:6px;}
-.art-info strong {color:var(--gold);}
-footer {
-  text-align:center;padding:40px 10px;border-top:1px solid #111;
-  background:#030b1a;color:var(--muted);
-}
-.social a {
-  margin:0 8px;color:var(--light);font-size:1.4rem;text-decoration:none;
-  transition:color .3s,text-shadow .3s;
-}
-.social a:hover {color:var(--gold);text-shadow:0 0 8px rgba(243,201,105,.6);}
+header nav a{color:var(--light);margin:0 10px;text-decoration:none;transition:var(--fade);}
+header nav a:hover{color:var(--gold);}
+#langToggle{cursor:pointer;font-weight:700;}
+main{position:relative;z-index:1;}
+section{padding:100px 20px;max-width:1200px;margin:auto;}
+h1,h2{color:var(--gold);}
 .lang-section{display:none;}
 body.korean .ko{display:block;}
 body.english .en{display:block;}
-.bio{text-align:left;margin-top:40px;}
-.bio h3{color:var(--gold);margin-bottom:10px;}
+.hero{height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:12px;}
+.poem{max-width:800px;text-align:left;}
+.poem p{margin:3px 0;color:var(--light);}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:14px;}
+.tab{padding:8px 14px;border-radius:20px;cursor:pointer;border:1px solid #222;background:var(--panel2);color:var(--light);transition:var(--fade);}
+.tab.active{background:linear-gradient(180deg,var(--gold),#e0d39a);color:#0b0f2c;}
+.tabpanel{display:none;animation:fade .5s;}
+.tabpanel.active{display:block;}
+@keyframes fade{from{opacity:0;}to{opacity:1;}}
+.art-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+.card{background:var(--panel2);border-radius:8px;overflow:hidden;transition:transform .3s;}
+.card:hover{transform:scale(1.03);}
+.card img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover;filter:brightness(1.05);}
+.meta{padding:8px 10px;font-size:.9rem;color:var(--muted);}
+.meta b{color:#e9efff;}
+#lightbox{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;
+background:rgba(0,0,0,.85);opacity:0;pointer-events:none;transition:.25s;z-index:11;}
+#lightbox.open{opacity:1;pointer-events:auto;}
+#lightbox img{max-width:92vw;max-height:88vh;border:2px solid var(--gold);border-radius:8px;transform:scale(.95);transition:transform .3s;}
+#lightbox.open img{transform:scale(1);}
+.lb-btn,.lb-close{position:fixed;background:rgba(15,20,40,.6);color:#fff;border:1px solid #333;border-radius:50%;
+width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;z-index:12;}
+.lb-prev{left:18px;top:50%;transform:translateY(-50%);}
+.lb-next{right:18px;top:50%;transform:translateY(-50%);}
+.lb-close{top:20px;right:20px;}
+.accordion{display:grid;gap:8px;margin-top:12px;}
+.acc-item{background:var(--panel2);border-radius:10px;overflow:hidden;transition:max-height .4s ease;}
+.acc-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer;}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.acc-item.open .acc-body{max-height:300px;padding-bottom:12px;}
+.acc-item h4{color:#e9efff;font-weight:600;}
+.acc-item.open h4{color:var(--gold);}
+footer{text-align:center;border-top:1px solid #111;background:#030b1a;padding:40px 10px;}
+.social a{margin:0 8px;color:var(--light);font-size:1.4rem;text-decoration:none;transition:var(--fade);}
+.social a:hover{color:var(--gold);}
 </style>
 </head>
-
 <body class="korean">
+<canvas id="waves"></canvas>
 
 <header>
   <div>등작 燈酌 DUNGZAK CESTLAVIE</div>
   <nav>
-    <a href="#poem">Poem</a>
-    <a href="#bio">Bio</a>
-    <a href="#works">Works</a>
-    <a href="#contact">Contact</a>
+    <a href="#poem">Poem</a><a href="#bio">Bio</a><a href="#works">Works</a><a href="#reports">Reports</a>
     <span id="langToggle">🇰🇷 / 🇬🇧</span>
   </nav>
 </header>
 
+<main>
 <section class="hero" id="poem">
-  <div class="ko lang-section">
-    <h1>〈파리의 센느강〉</h1>
-    <h2>등작 燈酌 DUNGZAK CESTLAVIE</h2>
-    <div class="poem">
-      <p>센느강 다리 아래, 노트르담 성당의 촛불이 켜질 무렵—</p>
-      <p>소박한 꿈들을 안고 사는 사람들이 모여 춤춘다.</p>
-      <p>빙글빙글 돌아가며 내딛는 발걸음의 화음 위로,</p>
-      <p>바이올린이 새파랗고 샛노랑의 빛을 흩뿌리며 웃는다.</p>
-      <p>꿈꾸는 여인들과 꿈꾸는 남성들이 손을 잡고,</p>
-      <p>사람의 향기를 맡으며 재빠른 음률에 몸을 맡긴다.</p>
-      <p>아담과 이브의 별자국이 눈물방울처럼 흘러내리는 나무,</p>
-      <p>그 풍경 속에서 초승달은 어여쁜 하얀 미소를 흘린다.</p>
-      <p>샤락, 샤락— 춤사위의 리듬이 확장될수록,</p>
-      <p>구경하던 이들마저 어깨와 허리를 들썩이며,</p>
-      <p>사랑의 입맞춤을 의식한다.</p>
-      <p>흘러감 속에 포개진 순간,</p>
-      <p>그들은 영혼의 박제가 되어,</p>
-      <p>멈춤 속에 영원을 새긴다.</p>
-    </div>
-  </div>
-
-  <div class="en lang-section">
-    <h1>The Seine of Paris</h1>
-    <h2>DUNGZAK CESTLAVIE</h2>
-    <div class="poem">
-      <p>Beneath the bridge of the Seine, as the candles of Notre-Dame begin to glow—</p>
-      <p>People who live with humble dreams gather to dance.</p>
-      <p>Their circling steps form harmonies upon the rhythm of their feet,</p>
-      <p>As violins scatter blue and golden light, laughing in brilliance.</p>
-      <p>Dreaming women and dreaming men clasp hands,</p>
-      <p>Breathing the scent of humanity, surrendering to the swift rhythm.</p>
-      <p>A tree where Adam and Eve’s star-traces drip like tears,</p>
-      <p>In that scene, the crescent moon releases a tender white smile.</p>
-      <p>Sharak, sharak— as the rhythm of dance expands,</p>
-      <p>Even the onlookers begin to sway their shoulders and waists,</p>
-      <p>Becoming aware of love’s gentle kiss.</p>
-      <p>Within the flowing overlap of time,</p>
-      <p>They become taxidermies of the soul,</p>
-      <p>Inscribing eternity into stillness.</p>
-    </div>
-  </div>
+<div class="lang-section ko"><h1>〈파리의 센느강〉</h1><p>등작 燈酌 DUNGZAK CESTLAVIE</p>
+<div class="poem"><p>센느강 다리 아래, 노트르담 성당의 촛불이 켜질 무렵—</p><p>소박한 꿈들을 안고 사는 사람들이 모여 춤춘다.</p><p>빙글빙글 돌아가며 내딛는 발걸음의 화음 위로,</p><p>바이올린이 새파랗고 샛노랑의 빛을 흩뿌리며 웃는다.</p><p>꿈꾸는 여인들과 꿈꾸는 남성들이 손을 잡고,</p><p>사람의 향기를 맡으며 재빠른 음률에 몸을 맡긴다.</p><p>아담과 이브의 별자국이 눈물방울처럼 흘러내리는 나무,</p><p>그 풍경 속에서 초승달은 어여쁜 하얀 미소를 흘린다.</p><p>샤락, 샤락— 춤사위의 리듬이 확장될수록,</p><p>구경하던 이들마저 어깨와 허리를 들썩이며, 사랑의 입맞춤을 의식한다.</p><p>흘러감 속에 포개진 순간, 그들은 영혼의 박제가 되어 멈춤 속에 영원을 새긴다.</p></div></div>
+<div class="lang-section en"><h1>The Seine of Paris</h1><p>DUNGZAK CESTLAVIE</p>
+<div class="poem"><p>Beneath the bridge of the Seine, as the candles of Notre-Dame begin to glow—</p><p>People who live with humble dreams gather to dance.</p><p>Their circling steps form harmonies upon the rhythm of their feet,</p><p>As violins scatter blue and golden light, laughing in brilliance.</p><p>Dreaming women and dreaming men clasp hands, breathing the scent of humanity, surrendering to the swift rhythm.</p><p>A tree where Adam and Eve’s star-traces drip like tears, and in that scene, the crescent moon releases a tender white smile.</p><p>Sharak, sharak— as the rhythm of dance expands, even the onlookers begin to sway, becoming aware of love’s gentle kiss.</p><p>Within the flowing overlap of time, they become taxidermies of the soul, inscribing eternity into stillness.</p></div></div>
 </section>
 
 <section id="bio">
-  <div class="ko lang-section bio">
-    <h3>등작 燈酌 DUNGZAK CESTLAVIE — 작가 소개</h3>
-    <p>등작은 빛의 철학과 인간의 감정을 화폭에 담는 현대 예술가이다.  
-    그의 예술은 기억과 존재의 흐름 속에서 인간이 감각하는 '빛의 언어'를 탐구한다.</p>
-    <p>파리와 베를린, 서울을 오가며 그는 회화, 시, 미학 보고서를 통해  
-    예술이 존재의 회복과 정신의 재탄생을 돕는 기도가 될 수 있음을 증명하고 있다.</p>
-    <p>그의 작품들은 DUNGZAK CESTLAVIE Nuance Company를 중심으로 전개되며,  
-    미학 보고서 DCAR 시리즈(1–8)를 통해 철학·뇌과학·예술의 융합을 시도한다.</p>
-  </div>
-  <div class="en lang-section bio">
-    <h3>DUNGZAK CESTLAVIE — Artist Biography</h3>
-    <p>DUNGZAK CESTLAVIE is a contemporary artist exploring the philosophy of light  
-    and the emotions of human existence through painting, poetry, and aesthetic theory.</p>
-    <p>Working between Paris, Berlin, and Seoul, his art reveals how prayer, light, and memory  
-    converge into the restoration of being and the rebirth of mind.</p>
-    <p>Through the Aesthetic Reports (DCAR 1–8), he unites philosophy, neuroscience, and art  
-    under the universe of DUNGZAK CESTLAVIE Nuance Company.</p>
-  </div>
+<h2>등작 燈酌 DUNGZAK CESTLAVIE — Bio</h2>
+<div class="lang-section ko"><p>등작은 빛의 철학과 인간의 감정을 화폭에 담는 현대 예술가이다. 그의 예술은 기억과 존재의 흐름 속에서 인간이 감각하는 '빛의 언어'를 탐구한다. 파리·베를린·서울을 오가며 예술이 존재의 회복과 정신의 재탄생을 돕는 기도가 될 수 있음을 증명한다.</p></div>
+<div class="lang-section en"><p>DUNGZAK CESTLAVIE is a contemporary artist exploring the philosophy of light and the emotions of existence through painting, poetry, and theory — showing how art can become prayer for the rebirth of being.</p></div>
 </section>
 
 <section id="works">
-  <h2>Artworks — 작품 아카이브</h2>
-
-  <!-- 5개의 섹션 -->
-  <div id="artSections"></div>
+<h2>Artworks — 작품 아카이브</h2>
+<div class="tabs"></div><div class="tabpanels"></div>
 </section>
+
+<section id="reports"><h2>Aesthetic Reports — DCAR 1–8</h2><div class="accordion"></div></section>
 
 <section id="contact">
-  <div class="social">
-    <a href="https://youtube.com/@dungzakcestlavie" target="_blank" title="YouTube">📺</a>
-    <a href="https://instagram.com/dungzakcestlavie" target="_blank" title="Instagram">📷</a>
-    <a href="mailto:dungzakcestlavie@gmail.com" title="Email">✉️</a>
-  </div>
+<div class="social"><a href="https://youtube.com/@dungzakcestlavie" target="_blank">📺</a><a href="https://instagram.com/dungzakcestlavie" target="_blank">📷</a><a href="mailto:dungzakcestlavie@gmail.com">✉️</a></div>
 </section>
+</main>
+<footer><p>© 2025 등작 燈酌 DUNGZAK CESTLAVIE. All rights reserved.</p></footer>
 
-<footer>
-  <p>© 2025 등작 燈酌 DUNGZAK CESTLAVIE. All rights reserved.</p>
-</footer>
+<div id="lightbox"><div class="lb-btn lb-prev">❮</div><img><div class="lb-btn lb-next">❯</div><div class="lb-close">✕</div></div>
 
 <script>
-// 빛 산란 효과
-const hero=document.querySelector('.hero');
-document.addEventListener('mousemove',e=>{
-  hero.style.setProperty('--x',`${e.clientX}px`);
-  hero.style.setProperty('--y',`${e.clientY}px`);
-});
+const waves=document.getElementById('waves'),ctx=waves.getContext('2d');let W,H,t=0;function resize(){W=waves.width=innerWidth;H=waves.height=innerHeight;}window.addEventListener('resize',resize);resize();
+function draw(){t+=.008;ctx.clearRect(0,0,W,H);const sy=scrollY||0;base=(sy%H)/H;for(let k=0;k<3;k++){const amp=40+k*15,freq=.006+k*.0025,y0=(H*.3)+k*110+Math.sin(t*1.3+k)*20+base*100;ctx.beginPath();for(let x=0;x<=W;x+=6){const y=y0+Math.sin(x*freq+t*2+k)*amp;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}const g=ctx.createLinearGradient(0,y0-amp,0,y0+amp);g.addColorStop(0,'rgba(183,204,255,0.06)');g.addColorStop(.5,'rgba(243,201,105,0.10)');g.addColorStop(1,'rgba(183,204,255,0.06)');ctx.strokeStyle=g;ctx.lineWidth=2;ctx.stroke();}requestAnimationFrame(draw);}draw();
 
-// 언어 전환
-document.getElementById('langToggle').addEventListener('click',()=>{
-  document.body.classList.toggle('korean');
-  document.body.classList.toggle('english');
-});
+document.getElementById('langToggle').onclick=()=>document.body.classList.toggle('english');
 
-// 작품 섹션 자동 생성 (5섹션 × 20작품)
-const artData = [
-  {title:"Ⅰ. Light & Memory", folder:"light-memory"},
-  {title:"Ⅱ. Human Prayer", folder:"human-prayer"},
-  {title:"Ⅲ. Rebirth", folder:"rebirth"},
-  {title:"Ⅳ. Existence", folder:"existence"},
-  {title:"Ⅴ. Cosmos", folder:"cosmos"}
-];
-const artContainer=document.getElementById('artSections');
+// works setup
+const sections=[['Ⅰ Light & Memory','light-memory'],['Ⅱ Human Prayer','human-prayer'],['Ⅲ Rebirth','rebirth'],['Ⅳ Existence','existence'],['Ⅴ Cosmos','cosmos']];
+const tabs=document.querySelector('.tabs'),panels=document.querySelector('.tabpanels');
+sections.forEach(([title,key],i)=>{const tab=document.createElement('div');tab.className='tab'+(i==0?' active':'');tab.textContent=title;tab.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));tab.classList.add('active');document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));document.getElementById(key).classList.add('active');};tabs.appendChild(tab);
+const panel=document.createElement('div');panel.className='tabpanel'+(i==0?' active':'');panel.id=key;let h='<div class="art-grid">';for(let n=1;n<=20;n++){h+=`<div class="card" data-sec="${key}" data-idx="${n}"><img loading="lazy" data-src="works/${key}/${n}.jpg"><div class="meta"><b>Title:</b> Untitled ${n}<br><b>Material:</b> Acrylic on Canvas<br><b>Size:</b> 80×100cm<br><b>Year:</b> 2025</div></div>`;}h+='</div>';panel.innerHTML=h;panels.appendChild(panel);});
 
-artData.forEach(sec=>{
-  let html=`<div class='art-section'><h3>${sec.title}</h3><div class='art-grid'>`;
-  for(let i=1;i<=20;i++){
-    html+=`
-    <div class='art-item'>
-      <img src='works/${sec.folder}/${i}.jpg' alt='${sec.title} ${i}'>
-      <div class='art-info'>
-        <strong>Title:</strong> Untitled ${i}<br>
-        <strong>Material:</strong> Acrylic on Canvas<br>
-        <strong>Size:</strong> 80×100cm<br>
-        <strong>Year:</strong> 2025
-      </div>
-    </div>`;
-  }
-  html+=`</div></div>`;
-  artContainer.insertAdjacentHTML('beforeend',html);
-});
+// lazy load
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const img=e.target;img.src=img.dataset.src;io.unobserve(img);}})},{rootMargin:'200px'});document.querySelectorAll('img[data-src]').forEach(i=>io.observe(i));
+
+// lightbox
+const lb=document.getElementById('lightbox'),lbImg=lb.querySelector('img');let cur={sec:null,idx:0};
+document.addEventListener('click',e=>{const c=e.target.closest('.card');if(c){cur.sec=c.dataset.sec;cur.idx=parseInt(c.dataset.idx);openLB();}});
+function openLB(){lbImg.src=`works/${cur.sec}/${cur.idx}.jpg`;lb.classList.add('open');}
+lb.querySelector('.lb-close').onclick=()=>lb.classList.remove('open');
+lb.querySelector('.lb-prev').onclick=()=>{cur.idx=cur.idx<=1?20:cur.idx-1;openLB();};
+lb.querySelector('.lb-next').onclick=()=>{cur.idx=cur.idx>=20?1:cur.idx+1;openLB();};
+window.addEventListener('keydown',e=>{if(!lb.classList.contains('open'))return;if(e.key==='Escape')lb.classList.remove('open');if(e.key==='ArrowLeft')lb.querySelector('.lb-prev').click();if(e.key==='ArrowRight')lb.querySelector('.lb-next').click();});
+
+// reports
+const reports=[['DCAR-01-2025','On Light, Memory, and Being'],['DCAR-02-2025','The Restoration of Being'],['DCAR-03-2025','The Return of Humanity'],['DCAR-04-2025','The Rebirth of Mind'],['DCAR-05-2025','The Metaconsciousness of Light'],['DCAR-06-2025','The Return of Being'],['DCAR-07-2025','The Scars of Light'],['DCAR-08-2025','Toward the Human Prayer']];
+const acc=document.querySelector('.accordion');
+reports.forEach(([id,title])=>{const item=document.createElement('div');item.className='acc-item';item.innerHTML=`<div class="acc-head"><h4>${id} · ${title}</h4><span>▾</span></div><div class="acc-body"><p><a href="reports/${id}.html" style="color:var(--gold);text-decoration:none" target="_blank">Read full report →</a></p></div>`;item.querySelector('.acc-head').onclick=()=>{item.classList.toggle('open');};acc.appendChild(item);});
 </script>
-</body>
-</html>
+</body></html>
