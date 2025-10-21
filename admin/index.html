@@ -3,341 +3,269 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>DUNGZAK · Admin Console</title>
+<title>Admin Console · dungzak.art</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#0f1115; --panel:#171a21; --ink:#e8ecf1; --sub:#98a2b3; --ok:#22c55e; --err:#ef4444; --accent:#3b82f6; }
-  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:14px/1.5 ui-sans-serif,system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",Segoe UI,Roboto}
-  a{color:var(--accent);text-decoration:none}
-  .wrap{max-width:920px;margin:40px auto;padding:0 16px}
-  h1{font-size:28px;margin:0 0 8px}
-  .help{color:var(--sub);margin-bottom:24px}
-  .card{background:var(--panel);border:1px solid #232833;border-radius:12px;padding:18px;margin:18px 0}
-  .row{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center;margin:10px 0}
-  .row>label{color:#cbd5e1}
-  input,select,textarea{width:100%;padding:10px 12px;border:1px solid #2b3240;border-radius:10px;background:#0c0f14;color:var(--ink);outline:none}
-  textarea{min-height:110px;resize:vertical}
-  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-  button{padding:10px 14px;border:1px solid #2b3240;border-radius:10px;background:#0c0f14;color:var(--ink);cursor:pointer}
-  button.primary{background:var(--accent);border-color:var(--accent);color:white}
-  .msg{margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid #2b3240;color:#cbd5e1}
-  .msg.ok{border-color:#214a31;background:#0b1d14;color:#b6f6c5}
-  .msg.err{border-color:#4a2121;background:#1d0b0b;color:#ffc1c1;white-space:pre-wrap}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .thumb{width:120px;border-radius:8px;border:1px solid #2b3240}
-  small{color:var(--sub)}
-  hr{border:none;border-top:1px solid #222a36;margin:18px 0}
+:root{
+  --bg:#0c0f14; --card:#121722; --ink:#e7ebf4; --muted:#91a0b6; --accent:#c9ff55;
+  --ok:#38d39f; --err:#ff6b6b; --line:#1f2937;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Pretendard,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+.wrap{max-width:960px;margin:40px auto;padding:0 16px}
+h1{font-size:26px;margin:0 0 16px;font-weight:800;letter-spacing:.2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:16px 0;padding:18px}
+.row{display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:center;margin:10px 0}
+input,select,textarea{width:100%;background:#0b0f16;border:1px solid #253043;color:var(--ink);
+  border-radius:10px;padding:10px 12px;outline:none}
+label{color:var(--muted)}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{appearance:none;cursor:pointer;border:1px solid #2b384b;background:#101724;color:var(--ink);
+  padding:10px 14px;border-radius:10px}
+.btn.primary{background:linear-gradient(180deg,#1a2434,#0f1624);border-color:#3a4a62}
+.btn.accent{background:var(--accent);color:#0a0f16;border-color:#a4e23a;font-weight:700}
+.note{font-size:12px;color:var(--muted)}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:8px;margin:6px 0}
+hr{border:none;border-top:1px solid #1e2735;margin:18px 0}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid #28354a;background:#0d1320;color:var(--muted)}
+#repMsg{margin-left:8px;font-weight:600}
+#repMsg.ok{color:var(--ok)} #repMsg.err{color:var(--err)}
+img.preview{max-width:100%;border-radius:10px;border:1px solid #1f2a3d}
+small.code{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;color:#b7c4d9}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>등작 DUNGZAK CESTLAVIE · Admin Console</h1>
-  <p class="help">이 페이지는 관리자 전용입니다. GitHub 토큰은 브라우저 <code>localStorage</code> 에만 저장됩니다.</p>
+  <h1>Admin Console <span class="badge">dungzak.art</span></h1>
 
-  <!-- 1) 연결 설정 -->
+  <!-- (1) 연결 설정 -->
   <div class="card">
-    <h2>1) 연결 설정</h2>
-    <div class="row"><label>GitHub Owner</label><input id="owner" placeholder="예: dungzakcestlavie"></div>
-    <div class="row"><label>Repository</label><input id="repo"  placeholder="예: dungzakcestlavie.github.io"></div>
+    <h3>1) 연결 설정 · Connection</h3>
+    <div class="row"><label>GitHub Owner</label><input id="owner" placeholder="ex) dungzakcestlavie"></div>
+    <div class="row"><label>Repository</label><input id="repo" placeholder="ex) dungzakcestlavie.github.io"></div>
     <div class="row"><label>Branch</label><input id="branch" value="main"></div>
-    <div class="row"><label>Personal Access Token (repo)</label><input id="token" placeholder="github_pat_… 전체 붙여넣기"></div>
+    <div class="row"><label>Personal Access Token</label><input id="token" type="password" placeholder="github_pat_..."></div>
     <div class="btns">
-      <button id="saveConn">저장(로컬)</button>
-      <button id="logout">로그아웃/토큰삭제</button>
-      <button id="testConn">연결 테스트</button>
+      <button class="btn" id="saveLocal">저장(로컬)</button>
+      <button class="btn" id="logout">로그아웃/토큰삭제</button>
+      <button class="btn primary" id="testConn">연결 테스트</button>
+      <span id="repMsg" class=""></span>
     </div>
-    <div id="connMsg" class="msg" style="display:none"></div>
-    <small>토큰 권한: <b>Selected repository</b> + <b>Contents: Read &amp; write</b>, <b>Metadata: Read</b></small>
+    <div class="note">토큰은 <b>이 브라우저의 localStorage</b>에만 저장됩니다.</div>
   </div>
 
-  <!-- 2) 작품 업로드 -->
+  <!-- (2) 작품 업로드 -->
   <div class="card">
-    <h2>2) 작품 업로드 · Artworks</h2>
-    <div class="row">
-      <label>Series</label>
-      <select id="series">
-        <option value="light-memory">I Light &amp; Memory</option>
-        <option value="human-prayer">II Human Prayer</option>
-        <option value="rebirth">III Rebirth</option>
-        <option value="existence">IV Existence</option>
-        <option value="cosmos">V Cosmos</option>
-      </select>
-    </div>
-    <div class="row"><label>Artwork ID (영문·하이픈 권장)</label><input id="artId" placeholder="예: light-memory-1"></div>
-    <div class="row"><label>Title</label><input id="artTitle" placeholder="작품 제목"></div>
-    <div class="row"><label>Year</label><input id="artYear" placeholder="예: 2025"></div>
-    <div class="row"><label>Medium</label><input id="artMedium" value="Acrylic on Canvas"></div>
-    <div class="row"><label>Size</label><input id="artSize" placeholder="예: 120x90 cm"></div>
-    <div class="row"><label>Image (.jpg/.png)</label><input type="file" id="artFile" accept="image/*"></div>
+    <h3>2) 작품 업로드 · Artworks</h3>
+    <div class="row"><label>Series</label>
+      <select id="awSeries">
+        <option>I Light & Memory</option>
+        <option>II Human Prayer</option>
+        <option>III Rebirth</option>
+        <option>IV Existence</option>
+        <option>V Cosmos</option>
+      </select></div>
+    <div class="row"><label>Artwork ID</label><input id="awId" placeholder="영문-하이픈 권장 (ex. light-memory-1)"></div>
+    <div class="row"><label>Title</label><input id="awTitle" placeholder="작품 제목"></div>
+    <div class="row"><label>Year</label><input id="awYear" value="2025"></div>
+    <div class="row"><label>Medium</label><input id="awMedium" value="Acrylic on Canvas"></div>
+    <div class="row"><label>Size</label><input id="awSize" placeholder="120x90 cm"></div>
+    <div class="row"><label>Image (.jpg/.png)</label>
+      <input id="awImage" type="file" accept=".jpg,.jpeg,.png"></div>
     <div class="btns">
-      <button class="primary" id="btnUploadArt">이미지 업로드 + artworks.json 저장</button>
-      <button id="btnReloadList">목록 새로고침</button>
+      <button class="btn accent" id="btnUploadAw">이미지 업로드 + artworks.json 저장</button>
+      <button class="btn" id="btnRefreshAw">목록 새로고침</button>
     </div>
-    <div id="artMsg" class="msg" style="display:none"></div>
-    <hr>
-    <h3>현재 등록 작품</h3>
-    <div id="artList" class="grid2"></div>
+    <div id="awPreview"></div>
   </div>
 
-  <!-- 3) 미학 보고서 -->
+  <!-- (3) 미학 보고서 -->
   <div class="card">
-    <h2>3) 미학 보고서 · Reports</h2>
-    <div class="row"><label>Report ID</label><input id="repId" placeholder="예: dcar01"></div>
-    <div class="row"><label>Date</label><input id="repDate" placeholder="YYYY-MM-DD"></div>
-    <div class="row"><label>Title (영문)</label><input id="repTitleEn" placeholder="Report Title"></div>
-    <div class="row"><label>Title (국문)</label><input id="repTitleKo" placeholder="보고서 제목"></div>
-    <div class="row"><label>Summary</label><textarea id="repSummary" placeholder="요약"></textarea></div>
-    <div class="row"><label>Sections (JSON)</label>
-      <textarea id="repSections" placeholder='예시:
-[
-  {"heading":"On Light","body":"text...","images":["/images/reports/dcar01-1.jpg"]},
-  {"heading":"On Memory","body":"text...","images":[]}
-]' ></textarea>
-    </div>
+    <h3>3) 미학 보고서 · Reports</h3>
+    <div class="row"><label>Report ID</label><input id="rpId" placeholder="ex. dcar01"></div>
+    <div class="row"><label>Title (EN)</label><input id="rpTitleEn" placeholder="On Light, Memory, and Being"></div>
+    <div class="row"><label>Title (KO)</label><input id="rpTitleKo" placeholder="빛, 기억, 존재에 관하여"></div>
+    <div class="row"><label>Series</label><input id="rpSeries" value="Aesthetic Reports"></div>
+    <div class="row"><label>Year</label><input id="rpYear" value="2025"></div>
+    <div class="row"><label>Abstract</label><textarea id="rpAbstract" rows="3" placeholder="요약"></textarea></div>
+
+    <details class="card" style="background:#0b1019;border-color:#1e2637;">
+      <summary>섹션(최대 3개 예시) — 필요 갯수만 입력</summary>
+      <div id="secWrap">
+        <div class="kv"><label>Ⅰ Title</label><input class="sec-title" value="Light"></div>
+        <div class="kv"><label>Ⅰ Body</label><textarea class="sec-body" rows="2">…</textarea></div>
+        <div class="kv"><label>Ⅱ Title</label><input class="sec-title" value="Memory"></div>
+        <div class="kv"><label>Ⅱ Body</label><textarea class="sec-body" rows="2">…</textarea></div>
+        <div class="kv"><label>Ⅲ Title</label><input class="sec-title" value="Being"></div>
+        <div class="kv"><label>Ⅲ Body</label><textarea class="sec-body" rows="2">…</textarea></div>
+      </div>
+    </details>
+
     <div class="btns">
-      <button class="primary" id="btnSaveReport">리포트 저장</button>
+      <button class="btn accent" id="btnSaveReport">리포트 저장 (reports.json)</button>
+      <a class="btn" href="/reports/report-manager.html" target="_blank">리포트 관리자/인쇄</a>
     </div>
-    <div id="repMsg" class="msg" style="display:none"></div>
   </div>
 
 </div>
 
 <script>
-/* ===================== 공통 설정/상태 ===================== */
-const state = {
-  owner: '', repo: '', branch: 'main', token: ''
-};
-const FN_URL = '/.netlify/functions/githubProxy';
-const PATHS = {
-  artworksJson: 'data/artworks.json',
-  reportsJson:  'data/reports.json',
-  artImage: (id, ext) => `images/artworks/${id}${ext}`
-};
-const SERIES_LIMIT = 20;
+// ----------------- 상태 & 유틸 -----------------
+const $ = s=>document.querySelector(s);
+const state = { owner:'', repo:'', branch:'main', token:'' };
+const API = path => `https://api.github.com/repos/${state.owner}/${state.repo}/${path}`;
 
-/* ===================== DOM 헬퍼 ===================== */
-const $ = (sel) => document.querySelector(sel);
-const show = (el, ok, txt, cls='')=>{
-  el.style.display = 'block';
-  el.className = 'msg ' + (ok ? 'ok' : 'err') + (cls?(' '+cls):'');
-  el.textContent = txt;
-};
-
-/* ===================== 초기화 ===================== */
-init();
-function init(){
-  // load from localStorage
-  for(const k of ['owner','repo','branch','token']){
-    state[k] = localStorage.getItem('adm_'+k) || (k==='branch'?'main':'');
-    $('#'+k).value = state[k];
-  }
-  // events
-  $('#saveConn').onclick = onSaveConn;
-  $('#logout').onclick   = onLogout;
-  $('#testConn').onclick = onTestConn;
-
-  $('#btnUploadArt').onclick = onUploadArtwork;
-  $('#btnReloadList').onclick = renderArtList;
-
-  $('#btnSaveReport').onclick = onSaveReport;
-
-  renderArtList(); // first render
+function loadLocal(){
+  const s = JSON.parse(localStorage.getItem('adminState')||'{}');
+  Object.assign(state, s);
+  $('#owner').value = state.owner||'';
+  $('#repo').value = state.repo||'';
+  $('#branch').value = state.branch||'main';
+  $('#token').value = state.token||'';
 }
-
-/* ===================== 연결 저장/테스트 ===================== */
-function onSaveConn(){
-  for(const k of ['owner','repo','branch','token']){
-    state[k] = $('#'+k).value.trim();
-    localStorage.setItem('adm_'+k, state[k]);
-  }
-  show($('#connMsg'), true, '저장되었습니다.');
+function saveLocal(){
+  Object.assign(state,{
+    owner:$('#owner').value.trim(),
+    repo:$('#repo').value.trim(),
+    branch:$('#branch').value.trim()||'main',
+    token:$('#token').value.trim()
+  });
+  localStorage.setItem('adminState', JSON.stringify(state));
+  ok('저장되었습니다.');
 }
-function onLogout(){
-  for(const k of ['owner','repo','branch','token']){
-    localStorage.removeItem('adm_'+k);
-    $('#'+k).value = k==='branch'?'main':'';
-    state[k] = k==='branch'?'main':'';
-  }
-  show($('#connMsg'), true, '로그아웃 및 토큰 삭제 완료.');
+function logout(){
+  localStorage.removeItem('adminState');
+  $('#token').value=''; state.token='';
+  info('토큰 삭제됨');
 }
-async function onTestConn(){
-  try{
-    mustReady();
-    // repo 메타 읽기(권한 확인)
-    const url = `https://api.github.com/repos/${state.owner}/${state.repo}`;
-    const res = await fetch(url, {headers:{Authorization:`Bearer ${state.token}`}});
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    show($('#connMsg'), true, '연결 성공! (repo 접근 가능)');
-  }catch(e){
-    show($('#connMsg'), false, '연결 실패: '+e.message);
-  }
+function ok(msg){ const n=$('#repMsg'); n.className='ok'; n.textContent=msg; }
+function err(msg){ const n=$('#repMsg'); n.className='err'; n.textContent=msg; }
+async function getJson(rel){ const r = await fetch(rel+`?_${Date.now()}`); if(!r.ok) throw 'HTTP '+r.status; return r.json(); }
+
+// GitHub contents API helpers
+async function getFile(path){
+  const r = await fetch(API(`contents/${path}`), { headers: {Authorization:`Bearer ${state.token}`}});
+  if(!r.ok) throw await r.text();
+  return r.json(); // includes sha, content (base64)
 }
-
-/* ===================== 작품 업로드 ===================== */
-async function onUploadArtwork(){
-  const msg = $('#artMsg');
-  try{
-    mustReady();
-    const id = slug($('#artId').value);
-    const seriesId = $('#series').value;
-    const title = $('#artTitle').value.trim();
-    const year = $('#artYear').value.trim();
-    const medium = $('#artMedium').value.trim();
-    const size = $('#artSize').value.trim();
-    const file = $('#artFile').files[0];
-    if(!id) throw new Error('Artwork ID를 입력하세요.');
-    if(!title) throw new Error('Title을 입력하세요.');
-    if(!file) throw new Error('이미지 파일을 선택하세요.');
-
-    // 1) 이미지 업로드
-    const ext = file.name.toLowerCase().endsWith('.png') ? '.png' : '.jpg';
-    const imgPath = PATHS.artImage(id, ext);
-    const b64 = await fileToBase64(file); // "data:image/..;base64,xxx"
-    const contentBase64 = b64.split(',')[1];
-
-    await commitFile(imgPath, `feat(art): upload image ${id}`, contentBase64, true);
-
-    // 2) artworks.json 업데이트 (+ 시리즈당 20개 제한)
-    const json = await safeFetchJson(PATHS.artworksJson);
-    const series = (json.series || []).find(s=>s.id===seriesId);
-    if(!series) throw new Error('알 수 없는 시리즈: '+seriesId);
-
-    series.items = series.items || [];
-    const found = series.items.find(x=>x.id===id);
-    const item = {
-      id, title, year, medium, size,
-      image: '/'+imgPath,
-      series: seriesId,
-      updatedAt: new Date().toISOString()
-    };
-    if(found) Object.assign(found, item);
-    else {
-      if(series.items.length >= (series.limit || SERIES_LIMIT))
-        throw new Error(`이 시리즈는 최대 ${series.limit||SERIES_LIMIT}점까지 등록 가능합니다.`);
-      series.items.push(item);
-    }
-    await saveJson(PATHS.artworksJson, json, `update artworks: ${id}`);
-
-    show(msg, true, `업로드/저장 완료 · ${id}`);
-    renderArtList();
-  }catch(e){
-    show(msg, false, `오류: ${String(e.message||e)}`);
-  }
-}
-
-/* ===================== 작품 목록 표시 ===================== */
-async function renderArtList(){
-  const box = $('#artList');
-  box.innerHTML = '<small>로딩 중…</small>';
-  try{
-    const json = await safeFetchJson(PATHS.artworksJson);
-    const all = (json.series||[]).flatMap(s => (s.items||[]).map(v=>({...v, _seriesTitle:s.title||s.id})));
-    if(!all.length){ box.innerHTML = '<small>등록된 작품이 없습니다.</small>'; return; }
-    const html = all.sort((a,b)=>(a.series+b.id).localeCompare(b.series+a.id)).map(v=>`
-      <div class="card">
-        <div class="row"><label>이미지</label><div><img class="thumb" src="${v.image}" alt=""></div></div>
-        <div class="row"><label>ID</label><div>${v.id}</div></div>
-        <div class="row"><label>Title</label><div>${v.title}</div></div>
-        <div class="row"><label>Series</label><div>${v._seriesTitle}</div></div>
-        <div class="row"><label>Year</label><div>${v.year||''}</div></div>
-      </div>
-    `).join('');
-    box.innerHTML = html;
-  }catch(e){
-    box.innerHTML = `<div class="msg err">목록 로딩 실패: ${String(e.message||e)}</div>`;
-  }
-}
-
-/* ===================== 리포트 저장 ===================== */
-async function onSaveReport(){
-  const msg = $('#repMsg');
-  try{
-    mustReady();
-    const id = slug($('#repId').value);
-    const date = $('#repDate').value.trim();
-    const titleEn = $('#repTitleEn').value.trim();
-    const titleKo = $('#repTitleKo').value.trim();
-    let sections;
-    try{
-      sections = JSON.parse($('#repSections').value || '[]');
-      if(!Array.isArray(sections)) throw 0;
-    }catch{ throw new Error('Sections 는 JSON 배열이어야 합니다.'); }
-
-    const json = await safeFetchJson(PATHS.reportsJson);
-    json.reports = json.reports || [];
-    const found = json.reports.find(x=>x.id===id);
-    const r = { id, date, titleEn, titleKo, summary: $('#repSummary').value || '', sections, updatedAt:new Date().toISOString() };
-    if(found) Object.assign(found, r); else json.reports.push(r);
-
-    await saveJson(PATHS.reportsJson, json, `update report: ${id}`);
-    show(msg, true, `리포트 저장 완료: ${id}`);
-  }catch(e){
-    show(msg, false, `오류: ${String(e.message||e)}`);
-  }
-}
-
-/* ===================== GitHub 연동 유틸 ===================== */
-async function safeFetchJson(relPath){
-  // 캐시 무효화
-  const url = `/${relPath}?_${Date.now()}`;
-  const res = await fetch(url);
-  if(res.status === 404){ // 초기 파일이 없다면 기본 스켈레톤 제공
-    if(relPath.endsWith('artworks.json')){
-      return { series:[
-        {id:'light-memory', title:'I Light & Memory', limit:20, items:[]},
-        {id:'human-prayer', title:'II Human Prayer', limit:20, items:[]},
-        {id:'rebirth', title:'III Rebirth', limit:20, items:[]},
-        {id:'existence', title:'IV Existence', limit:20, items:[]},
-        {id:'cosmos', title:'V Cosmos', limit:20, items:[]}
-      ]};
-    }
-    if(relPath.endsWith('reports.json')) return {reports:[]};
-  }
-  if(!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.json();
-}
-
-async function saveJson(path, obj, message){
-  const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2))));
-  await commitFile(path, message, contentBase64, true);
-}
-
-async function commitFile(path, message, contentBase64, isUpdate){
-  mustReady();
-  const body = { path, message, contentBase64, branch:state.branch, token:state.token, isUpdate: !!isUpdate };
-  const res = await fetch(FN_URL, {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json' },
+async function commitFile(path, message, base64, sha/*optional*/){
+  const body = { message, content: base64, branch: state.branch };
+  if(sha) body.sha = sha;
+  const r = await fetch(API(`contents/${path}`), {
+    method:'PUT',
+    headers:{'Authorization':`Bearer ${state.token}`,'Content-Type':'application/json'},
     body: JSON.stringify(body)
   });
-  const out = await res.json().catch(()=> ({}));
-  if(!res.ok){
-    // GitHub 422 sha 미제공 등 오류 메시지 표시
-    throw new Error(`${res.status}: ${out.message || JSON.stringify(out)}`);
-  }
-  return out;
+  if(!r.ok) throw await r.text();
+  return r.json();
 }
-
-function mustReady(){
-  if(!(state.token && state.branch)) throw new Error('연결 설정에서 토큰/브랜치를 저장하세요.');
-}
-
 function fileToBase64(file){
   return new Promise((res,rej)=>{
-    const r = new FileReader();
-    r.onload  = () => res(r.result);
-    r.onerror = rej;
-    r.readAsDataURL(file);
+    const fr = new FileReader();
+    fr.onload=()=>res(fr.result.split(',')[1]);
+    fr.onerror=rej;
+    fr.readAsDataURL(file);
   });
 }
 
-function slug(s){
-  return (s||'').toString()
-    .trim()
-    .toLowerCase()
-    .replace(/[^\w\-]+/g,'-')
-    .replace(/\-+/g,'-')
-    .replace(/^\-+|\-+$/g,'');
-}
+// ----------------- (1) 연결 테스트 -----------------
+$('#saveLocal').onclick = saveLocal;
+$('#logout').onclick = logout;
+$('#testConn').onclick = async ()=>{
+  try{
+    saveLocal();
+    const j = await getFile('README.md'); // repo 존재 확인 용
+    ok('연결 성공 · README.md 확인됨');
+  }catch(e){ console.error(e); err('연결 실패: '+(e?.message||e)); }
+};
+
+// ----------------- (2) 작품 업로드 -----------------
+$('#awImage').onchange = async e=>{
+  const f = e.target.files?.[0];
+  if(!f) return;
+  const url = URL.createObjectURL(f);
+  $('#awPreview').innerHTML = `<img class="preview" src="${url}">`;
+};
+
+$('#btnUploadAw').onclick = async ()=>{
+  try{
+    saveLocal();
+    const id = $('#awId').value.trim();
+    if(!id) throw 'Artwork ID 필수';
+    const file = $('#awImage').files?.[0];
+    if(!file) throw '이미지 파일을 선택하세요.';
+
+    // 1) 이미지 업로드
+    const imgPath = `images/artworks/${id}${file.name.toLowerCase().endsWith('.png')?'.png':'.jpg'}`;
+    const base64 = await fileToBase64(file);
+    let prev = null;
+    try{ const ex = await getFile(imgPath); prev = ex.sha; }catch(_){} // 없으면 무시
+    await commitFile(imgPath, `upload artwork image: ${id}`, base64, prev);
+
+    // 2) artworks.json 업데이트
+    const dataPath = 'data/artworks.json';
+    let art = { items:[] }, sha = null;
+    try{ const raw = await getFile(dataPath); sha = raw.sha; art = JSON.parse(atob(raw.content)); }catch(_){}
+    const item = {
+      id, title: $('#awTitle').value.trim(),
+      series: $('#awSeries').value, year: $('#awYear').value.trim(),
+      medium: $('#awMedium').value.trim(), size: $('#awSize').value.trim(),
+      image: '/'+imgPath
+    };
+    const found = art.items.find(x=>x.id===id);
+    if(found) Object.assign(found, item); else art.items.push(item);
+    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(art,null,2))));
+    await commitFile(dataPath, `update artworks.json : ${id}`, b64, sha);
+
+    ok('이미지 업로드 + artworks.json 저장 완료');
+  }catch(e){ console.error(e); err('오류: '+(e?.message||e)); }
+};
+
+$('#btnRefreshAw').onclick = async ()=>{
+  try{
+    const j = await getJson('/data/artworks.json');
+    $('#awPreview').innerHTML = `<small class="code">현재 작품 수: ${j.items.length}</small>`;
+    ok('목록 새로고침 완료');
+  }catch(e){ err('목록 로드 실패'); }
+};
+
+// ----------------- (3) 미학 보고서 저장 -----------------
+$('#btnSaveReport').onclick = async ()=>{
+  try{
+    saveLocal();
+    const id = $('#rpId').value.trim();
+    if(!id) throw 'Report ID 필수';
+
+    const sections = [...document.querySelectorAll('.sec-title')].map((el,i)=>({
+      title: el.value.trim(),
+      body: document.querySelectorAll('.sec-body')[i].value.trim()
+    })).filter(s=>s.title || s.body);
+
+    const r = {
+      id,
+      title_en: $('#rpTitleEn').value.trim(),
+      title_ko: $('#rpTitleKo').value.trim(),
+      series: $('#rpSeries').value.trim(),
+      year: $('#rpYear').value.trim(),
+      abstract: $('#rpAbstract').value.trim(),
+      sections
+    };
+
+    const dataPath = 'data/reports.json';
+    let json = { reports:[] }, sha = null;
+    try{ const raw = await getFile(dataPath); sha = raw.sha; json = JSON.parse(atob(raw.content)); }catch(_){}
+    const found = json.reports.find(x=>x.id===id);
+    if(found) Object.assign(found, r); else json.reports.push(r);
+    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(json,null,2))));
+    await commitFile(dataPath, `update reports.json : ${id}`, b64, sha);
+
+    ok(`리포트 저장 완료: ${id}`);
+  }catch(e){ console.error(e); err('오류: '+(e?.message||e)); }
+};
+
+// 초기화
+loadLocal();
 </script>
 </body>
 </html>
