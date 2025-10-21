@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Works — DUNGZAK CESTLAVIE</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  :root{
+    --bg:#0b0f16; --card:#121826; --text:#eaeef7; --muted:#99a3b3; --accent:#f0c94d;
+    --gap:14px; --round:14px; --shadow:0 6px 18px rgba(0,0,0,.25);
+  }
+  html,body{background:var(--bg); color:var(--text); margin:0; font-family:ui-sans-serif,system-ui,AppleSDGothicNeo,'Noto Sans KR',Roboto,Arial; }
+  header{position:sticky; top:0; backdrop-filter:saturate(120%) blur(10px);
+    background:linear-gradient(180deg, rgba(11,15,22,.85), rgba(11,15,22,.55));
+    border-bottom:1px solid rgba(255,255,255,.06); z-index:10}
+  .wrap{max-width:1100px; margin:0 auto; padding:18px 16px;}
+  nav a{color:var(--muted); text-decoration:none; margin-right:14px}
+  nav a.current{color:var(--text); font-weight:700}
+  h1{margin:10px 0 0 0; font-size:24px; letter-spacing:.4px}
+  .tabs{display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 8px}
+  .tab{padding:10px 14px; border-radius:999px; background:#0f1420; color:var(--muted); border:1px solid rgba(255,255,255,.08); cursor:pointer}
+  .tab.active{color:#111; background:var(--accent); border-color:transparent; font-weight:700}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:var(--gap); padding:8px 0 26px}
+  .card{background:var(--card); border:1px solid rgba(255,255,255,.06); border-radius:var(--round); overflow:hidden; box-shadow:var(--shadow)}
+  .thumb{aspect-ratio:4/5; background:#0f1420; display:block; width:100%; object-fit:cover}
+  .meta{padding:12px 14px; color:var(--muted); font-size:14px; line-height:1.4}
+  .meta .title{color:var(--text); font-size:15px; font-weight:600}
+  .meta .row{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+  .pill{padding:3px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.08)}
+  .empty{opacity:.7; padding:20px}
+  footer{border-top:1px solid rgba(255,255,255,.06); color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <nav>
+      <a href="/"          >Home</a>
+      <a href="/poem/"     >Poem</a>
+      <a href="/bio/"      >Bio</a>
+      <a href="/works/" class="current">Works</a>
+      <a href="/reports/"  >Reports</a>
+    </nav>
+    <h1>Artworks — 작품 아카이브</h1>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- 시리즈 탭 -->
+  <div class="tabs" id="tabs"></div>
+  <!-- 작품 그리드 -->
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">No artworks yet.</div>
+</main>
+
+<footer><div class="wrap">© DUNGZAK CESTLAVIE</div></footer>
+
+<script>
+const SERIES = [
+  'I Light & Memory',
+  'II Human Prayer',
+  'III Rebirth',
+  'IV Existence',
+  'V Cosmos'
+];
+
+// 한 섹션당 최대 20점만 보여주기 (요청 반영)
+const MAX_PER_SERIES = 20;
+
+// 캐시 무력화용 파라미터
+const bust = () => `?_=${Date.now()}`;
+
+// 안전한 텍스트
+const esc = s => (s ?? '').toString().replace(/[&<>"]/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[m]));
+
+// 탭 렌더
+const tabsEl = document.getElementById('tabs');
+const gridEl = document.getElementById('grid');
+const emptyEl = document.getElementById('empty');
+
+let all = [];
+let currentSeries = SERIES[0];
+
+function renderTabs(){
+  tabsEl.innerHTML = '';
+  SERIES.forEach(s=>{
+    const b = document.createElement('button');
+    b.className = 'tab' + (s===currentSeries?' active':'');
+    b.textContent = s;
+    b.onclick = ()=>{ currentSeries=s; renderTabs(); renderGrid(); };
+    tabsEl.appendChild(b);
+  });
+}
+
+function pathImage(it){
+  // repo 기준 이미지 위치
+  // 예: images/artworks/light-memory-1.jpg
+  if(it.imagePath) return it.imagePath; // data에 직접 경로가 있으면 사용
+  const file = (it.imageFile || `${it.id||''}.jpg`).replace(/^\//,'');
+  return `/images/artworks/${file}`;
+}
+
+function card(it){
+  const img = document.createElement('img');
+  img.className = 'thumb';
+  img.loading = 'lazy';
+  img.src = pathImage(it) + bust();
+  img.alt = it.title || it.id || 'Artwork';
+  img.onerror = () => { img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="750"><rect width="100%" height="100%" fill="#0f1420"/><text x="50%" y="50%" fill="#6b7280" font-size="22" text-anchor="middle">No Image</text></svg>`
+  )};
+
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  meta.innerHTML = `
+    <div class="title">${esc(it.title || it.id || 'Untitled')}</div>
+    <div class="row">
+      <span class="pill">${esc(it.series||'–')}</span>
+      <span class="pill">${esc(it.year||'')}</span>
+      ${it.size?`<span class="pill">${esc(it.size)}</span>`:''}
+      ${it.medium?`<span class="pill">${esc(it.medium)}</span>`:''}
+    </div>
+  `;
+
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.appendChild(img);
+  card.appendChild(meta);
+  return card;
+}
+
+function renderGrid(){
+  const list = all.filter(x => (x.series||'').trim() === currentSeries);
+  gridEl.innerHTML = '';
+  if(list.length===0){ emptyEl.style.display='block'; return; }
+  emptyEl.style.display='none';
+  list.slice(0, MAX_PER_SERIES).forEach(it => gridEl.appendChild(card(it)));
+}
+
+async function load(){
+  try{
+    const res = await fetch(`/data/artworks.json${bust()}`);
+    if(!res.ok) throw new Error(res.status);
+    const json = await res.json();
+    // artworks.json 형식: { "items": [...] } 또는 배열 둘 다 지원
+    all = Array.isArray(json)? json : (json.items || json.reports || json.artworks || []);
+  }catch(e){
+    all = [];
+    console.error('load artworks failed', e);
+  }
+  renderTabs();
+  renderGrid();
+}
+load();
+</script>
+</body>
+</html>
