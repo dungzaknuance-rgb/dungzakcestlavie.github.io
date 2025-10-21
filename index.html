@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>燈酌 DUNGZAK CESTLAVIE — The Seine of Paris</title>
+
+  <!-- SEO -->
+  <meta name="description" content="등작 燈酌 DUNGZAK CESTLAVIE — 회화, 시, 영상의 경계를 넘나드는 예술가. 대표 시편 〈파리의 센느강〉." />
+  <link rel="canonical" href="https://dungzak.art/">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="燈酌 DUNGZAK CESTLAVIE">
+  <meta property="og:description" content="회화와 시가 겹쳐지는 공간. 〈파리의 센느강〉">
+  <meta property="og:url" content="https://dungzak.art/">
+  <meta property="og:image" content="https://dungzak.art/og.jpg"> <!-- 필요 시 리포지토리에 og.jpg 추가 -->
+  <meta name="twitter:card" content="summary_large_image">
+
+  <style>
+    :root{
+      --ink:#0a1034;           /* 심해 남파랑 */
+      --ink-2:#0e1a58;
+      --starlight:#b7ccff;     /* 별빛 */
+      --gold:#f3c969;          /* 금빛 하이라이트 */
+      --gold-2:#e7a93a;
+      --paper:#f7f7fb;
+      --muted:#97a3c0;
+      --max:1080px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:radial-gradient(1200px 800px at 70% -10%, #13306b 0%, #0b1541 55%, #060a22 100%) fixed;color:#e8efff;font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Helvetica, Arial}
+    a{color:var(--gold);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:var(--max);margin:0 auto;padding:24px}
+    /* 헤더 */
+    header{position:sticky;top:0;backdrop-filter:saturate(140%) blur(6px);background:linear-gradient(180deg, rgba(8,12,34,.85), rgba(8,12,34,.35));border-bottom:1px solid rgba(255,255,255,.06);z-index:10}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 20px}
+    .brand{display:flex;align-items:baseline;gap:10px}
+    .brand b{font-weight:800;letter-spacing:.02em}
+    .brand .han{font-size:20px}
+    .brand .lat{font-size:12px;color:var(--muted)}
+    .links a{margin-left:16px;font-size:14px;color:#dfe7ff}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.14);padding:8px 12px;border-radius:999px}
+    .btn:hover{border-color:rgba(255,255,255,.28)}
+    /* 히어로 */
+    .hero{position:relative;overflow:hidden}
+    .sky{
+      height:56vh;min-height:420px;display:grid;place-items:center;text-align:center;
+      background:
+        radial-gradient(600px 280px at 85% 20%, rgba(243,201,105,.25), transparent 70%),
+        radial-gradient(800px 360px at 10% 0%, rgba(64,127,255,.18), transparent 70%);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .title{font-size:clamp(32px,6.2vw,64px);line-height:1.05;margin:0 16px}
+    .subtitle{margin-top:10px;color:var(--starlight);opacity:.85}
+    .tagline{margin-top:18px;color:#cbd6ff}
+    .glow{color:var(--gold);text-shadow:0 0 22px rgba(243,201,105,.55)}
+    /* 별 */
+    .stars{position:absolute;inset:0;pointer-events:none;opacity:.75}
+    .stars i{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.8;animation:tw 6s linear infinite}
+    @keyframes tw{50%{opacity:.2}100%{opacity:.8}}
+    /* 섹션 */
+    section{padding:56px 20px}
+    h2{font-size:clamp(22px,3.8vw,34px);margin:0 0 16px}
+    p{line-height:1.85}
+    /* 시 */
+    .poem{display:grid;grid-template-columns:1fr;gap:20px}
+    .poem .card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px}
+    .lang-tabs{display:flex;gap:8px;margin-bottom:12px}
+    .chip{padding:6px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;font-size:12px;color:#dfe7ff;cursor:pointer}
+    .chip.active{border-color:var(--gold);color:var(--gold)}
+    .poem pre{white-space:pre-wrap;margin:0;font-family:inherit}
+    /* 갤러리 */
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    @media(min-width:680px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media(min-width:980px){.grid{grid-template-columns:repeat(4,1fr)}}
+    .tile{position:relative;border-radius:12px;overflow:hidden;background:#0b1438;border:1px solid rgba(255,255,255,.06)}
+    .tile img{width:100%;height:210px;object-fit:cover;display:block;filter:contrast(1.05) saturate(1.05)}
+    .tile .cap{position:absolute;inset:auto 0 0 0;background:linear-gradient(180deg, transparent, rgba(0,0,0,.72));padding:10px 12px;font-size:12px}
+    /* 푸터 */
+    footer{padding:26px 20px;border-top:1px solid rgba(255,255,255,.06);color:#bfc9ff}
+    .social a{margin-right:14px}
+    /* 오디오 */
+    .audio{display:flex;align-items:center;gap:10px;margin-top:8px}
+    .audio audio{width:100%}
+    .muted{color:#9fb0ff;font-size:13px}
+    /* 골드 디바이더 */
+    .divider{height:1px;background:linear-gradient(90deg, transparent, rgba(243,201,105,.6), transparent);margin:28px 0}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav wrap">
+    <div class="brand">
+      <b class="han">燈酌</b>
+      <b>DUNGZAK CESTLAVIE</b>
+      <span class="lat">art & poetry</span>
+    </div>
+    <nav class="links">
+      <a href="#poem" class="btn">Poem</a>
+      <a href="#works" class="btn">Works</a>
+      <a href="#contact" class="btn">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="sky">
+      <div class="wrap" style="text-align:center">
+        <h1 class="title"><span class="glow">The Seine of Paris</span></h1>
+        <p class="subtitle">파리의 센느강 — 회화와 시, 그리고 호흡</p>
+        <p class="tagline">우주적 블루 위에 금빛의 숨을 얹다.</p>
+        <div class="audio wrap" style="max-width:720px;margin-inline:auto">
+          <audio controls preload="metadata">
+            <!-- 여기에 음악 파일을 넣고 싶다면 리포지토리에 mp3 업로드 후 파일명으로 교체 -->
+            <source src="audio.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+      </div>
+      <div class="stars" id="stars"></div>
+    </div>
+  </section>
+
+  <!-- POEM -->
+  <section id="poem" class="wrap">
+    <h2>〈파리의 센느강 — The Seine of Paris〉</h2>
+    <div class="poem">
+      <div class="card">
+        <div class="lang-tabs">
+          <span class="chip active" data-tab="ko">Korean</span>
+          <span class="chip" data-tab="en">English</span>
+        </div>
+<pre data-pane="ko">센느강 다리 아래, 노트르담 성당의 촛불이 켜질 무렵—
+소박한 꿈들을 안고 사는 사람들이 모여 춤춘다.
+빙글빙글 돌아가며 내딛는 발걸음의 화음 위로,
+바이올린이 새파랗고 샛노랑의 빛을 흩뿌리며 웃는다.
+
+꿈꾸는 여인들과 꿈꾸는 남성들이 손을 잡고,
+사람의 향기를 맡으며 재빠른 음률에 몸을 맡긴다.
+아담과 이브의 별자국이 눈물방울처럼 흘러내리는 나무,
+그 풍경 속에서 초승달은 어여쁜 하얀 미소를 흘린다.
+
+샤락, 샤락— 춤사위의 리듬이 확장될수록,
+구경하던 이들마저 어깨와 허리를 들썩이며,
+사랑의 입맞춤을 의식한다.
+
+흘러감 속에 포개진 순간,
+그들은 영혼의 박제가 되어,
+멈춤 속에 영원을 새긴다.</pre>
+
+<pre data-pane="en" style="display:none">Beneath the bridge of the Seine, as the candles of Notre-Dame begin to glow—
+People who live with humble dreams gather to dance.
+Their circling steps form harmonies upon the rhythm of their feet,
+As violins scatter blue and golden light, laughing in brilliance.
+
+Dreaming women and dreaming men clasp hands,
+Breathing the scent of humanity, surrendering to the swift rhythm.
+A tree where Adam and Eve’s star-traces drip like tears,
+In that scene, the crescent moon releases a tender white smile.
+
+Sharak, sharak— as the rhythm of dance expands,
+Even the onlookers begin to sway their shoulders and waists,
+Becoming aware of love’s gentle kiss.
+
+Within the flowing overlap of time,
+They become taxidermies of the soul,
+Inscribing eternity into stillness.</pre>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">Artist Note</h3>
+        <p class="muted">빛은 숨처럼 왔다 가고, 물은 기억처럼 겹쳐 흐른다.  
+        파란 층위와 금빛 결이 만나는 순간—그 사이에서 인간은 춤이 된다.</p>
+        <div class="divider"></div>
+        <p style="color:#dfe7ff">등작 燈酌 DUNGZAK CESTLAVIE</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKS -->
+  <section id="works" class="wrap">
+    <h2>Works — 13 Paintings</h2>
+    <p class="muted">아래 이미지는 샘플 자리표시자입니다. 리포지토리에 이미지를 올리고 파일명만 바꾸면 자동으로 반영됩니다.</p>
+    <div class="grid">
+      <!-- 각 타일의 src를 리포지토리에 올린 파일명으로 교체 (예: img/blue-1.jpg) -->
+      <figure class="tile"><img src="samples/01.jpg" alt=""><figcaption class="cap">01 — Seine, Nocturne</figcaption></figure>
+      <figure class="tile"><img src="samples/02.jpg" alt=""><figcaption class="cap">02 — Golden Laugh</figcaption></figure>
+      <figure class="tile"><img src="samples/03.jpg" alt=""><figcaption class="cap">03 — Waltz of Feet</figcaption></figure>
+      <figure class="tile"><img src="samples/04.jpg" alt=""><figcaption class="cap">04 — Crescent</figcaption></figure>
+      <figure class="tile"><img src="samples/05.jpg" alt=""><figcaption class="cap">05 — Star-trace Tree</figcaption></figure>
+      <figure class="tile"><img src="samples/06.jpg" alt=""><figcaption class="cap">06 — Breath</figcaption></figure>
+      <figure class="tile"><img src="samples/07.jpg" alt=""><figcaption class="cap">07 — Adam & Eve</figcaption></figure>
+      <figure class="tile"><img src="samples/08.jpg" alt=""><figcaption class="cap">08 — Sharak</figcaption></figure>
+      <figure class="tile"><img src="samples/09.jpg" alt=""><figcaption class="cap">09 — Onlookers</figcaption></figure>
+      <figure class="tile"><img src="samples/10.jpg" alt=""><figcaption class="cap">10 — Overlap</figcaption></figure>
+      <figure class="tile"><img src="samples/11.jpg" alt=""><figcaption class="cap">11 — Stillness</figcaption></figure>
+      <figure class="tile"><img src="samples/12.jpg" alt=""><figcaption class="cap">12 — Eternity</figcaption></figure>
+      <figure class="tile"><img src="samples/13.jpg" alt=""><figcaption class="cap">13 — Paris</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="wrap">
+    <h2>Contact & Links</h2>
+    <p>전시, 라이선스, 협업 문의</p>
+    <p class="muted">이메일: <a href="mailto:dungzakcestlavie@gmail.com">dungzakcestlavie@gmail.com</a></p>
+    <div class="social">
+      <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://github.com/dungzakcestlavie/dungzakcestlavie.github.io" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <div>© <span id="y"></span> 燈酌 DUNGZAK CESTLAVIE — All rights reserved.</div>
+</footer>
+
+<script>
+  // 연도
+  document.getElementById('y').textContent = new Date().getFullYear();
+
+  // 별 생성
+  const field = document.getElementById('stars');
+  const N = 140;
+  for(let i=0;i<N;i++){
+    const s=document.createElement('i');
+    const x=Math.random()*100, y=Math.random()*100, d=3+Math.random()*6;
+    s.style.left=x+'%'; s.style.top=y+'%'; s.style.animationDelay=(Math.random()*6)+'s'; s.style.transform=`scale(${Math.random()*1.4+.4})`;
+    s.style.boxShadow=`0 0 ${d}px rgba(255,255,255,.8)`;
+    field.appendChild(s);
+  }
+
+  // 시 언어 탭
+  const tabs=[...document.querySelectorAll('.chip')];
+  const panes=[...document.querySelectorAll('[data-pane]')];
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const k=t.dataset.tab;
+    panes.forEach(p=>{p.style.display=(p.dataset.pane===k)?'block':'none';});
+  }));
+</script>
+
+<!-- 구조화데이터 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "燈酌 DUNGZAK CESTLAVIE",
+  "url": "https://dungzak.art/",
+  "sameAs": [
+    "https://github.com/dungzakcestlavie"
+  ],
+  "jobTitle": "Artist",
+  "knowsAbout": ["Painting","Poetry","Video Art"]
+}
+</script>  <footer style="
+  text-align:center;
+  margin-top:100px;
+  padding:80px 0;
+  background:linear-gradient(180deg, #001a33 0%, #000d1a 100%);
+  color:#d8c27a;
+  font-family:'Cormorant Garamond','Noto Serif KR',serif;
+  font-size:17px;
+  letter-spacing:0.6px;
+  line-height:1.8;
+  text-shadow:0 0 8px rgba(216,194,122,0.3);
+  border-top:1px solid rgba(216,194,122,0.25);
+  border-bottom:1px solid rgba(216,194,122,0.25);
+">
+  <p style="margin:0; font-weight:700;">
+    © 2025 <span style="font-weight:700;">등작 燈酌 DUNGZAK CESTLAVIE</span>
+  </p>
+  <p style="margin:0;">
+    <em>DUNGZAK ART COSMOS</em> · Curated & Theorized by
+    <strong>Lumera / Aesthetic Theorist</strong>
+  </p>
+  <p style="margin-top:22px; font-size:13px; color:#b8a96e; opacity:0.9;">
+    “빛은 기억의 숨결이며, 예술은 존재의 기도이다.”
+  </p>
+</footer>
+</body>
+</html>
