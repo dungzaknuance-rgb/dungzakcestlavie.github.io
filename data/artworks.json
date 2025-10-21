@@ -1,9 +1,14 @@
 {
-  "series": [
-    { "id": "light-memory", "title": "I Light & Memory", "limit": 20, "items": [] },
-    { "id": "human-prayer", "title": "II Human Prayer", "limit": 20, "items": [] },
-    { "id": "rebirth", "title": "III Rebirth", "limit": 20, "items": [] },
-    { "id": "existence", "title": "IV Existence", "limit": 20, "items": [] },
-    { "id": "cosmos", "title": "V Cosmos", "limit": 20, "items": [] }
+  "items": [
+    {
+      "id": "light-memory-1",
+      "series": "I Light & Memory",
+      "title": "Light & Memory 1",
+      "year": 2025,
+      "medium": "Acrylic on Canvas",
+      "size": "120×90 cm",
+      "imageFile": "light-memory-1.jpg"
+      // 또는 "imagePath": "/images/artworks/light-memory-1.jpg"
+    }
   ]
 }
