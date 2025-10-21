@@ -2,13 +2,12 @@
   "items": [
     {
       "id": "light-memory-1",
+      "title": "",
       "series": "I Light & Memory",
-      "title": "Light & Memory 1",
-      "year": 2025,
+      "year": "2025",
       "medium": "Acrylic on Canvas",
-      "size": "120×90 cm",
-      "imageFile": "light-memory-1.jpg"
-      // 또는 "imagePath": "/images/artworks/light-memory-1.jpg"
+      "size": "",
+      "image": "/images/artworks/light-memory-1.jpg"
     }
   ]
 }
