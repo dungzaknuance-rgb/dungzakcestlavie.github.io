@@ -1,11 +1,9 @@
-[
-  {
-    "id": "light-memory-1",
-    "title": "light-memory-1",
-    "year": "",
-    "medium": "",
-    "size": "",
-    "image": "images/artworks/light-memory-1.jpeg",
-    "series": "I Light & Memory"
-  }
-]
+{
+  "series": [
+    { "id": "light-memory", "title": "I Light & Memory", "limit": 20, "items": [] },
+    { "id": "human-prayer", "title": "II Human Prayer", "limit": 20, "items": [] },
+    { "id": "rebirth", "title": "III Rebirth", "limit": 20, "items": [] },
+    { "id": "existence", "title": "IV Existence", "limit": 20, "items": [] },
+    { "id": "cosmos", "title": "V Cosmos", "limit": 20, "items": [] }
+  ]
+}
