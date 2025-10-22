@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>등작 燈酌 DUNGZAK CESTLAVIE — Lightflow Ω.3</title>
-<meta name="description" content="Bio(한/영) · Works(5섹션×각 20작=100점) · DCAR 1–8 · 파동 색감 감정선 · 라이트트레일 · 사운드(Play/Stop) · 자연스러운 확대 라이트박스">
+<meta name="description" content="Bio(한/영) · Works(5섹션×각 20작=100점) · DCAR 1–8 · 파동 색감 감정선 · 라이트트레일 · Cosmic Resonance 사운드(Play/Stop) · 자연스러운 확대 라이트박스">
 <link rel="canonical" href="https://dungzak.art/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="DUNGZAK CESTLAVIE — Lightflow Ω.3">
@@ -57,27 +57,6 @@ body.english .en{display:block}
 .hero{min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px}
 .poem{max-width:800px;text-align:left}
 .poem p{margin:4px 0}
-
-/* Micro Links (작은 버튼 바) */
-.micro-links{
-  display:flex; gap:8px; justify-content:center; flex-wrap:wrap;
-  max-width:var(--max); margin:10px auto 0; padding:0 16px;
-}
-.micro-links a{
-  display:inline-flex; align-items:center; gap:6px;
-  padding:7px 12px; font-size:.85rem; border-radius:999px;
-  color:#e6ecff; text-decoration:none;
-  background:linear-gradient(180deg,#0f2644,#0a1730);
-  border:1px solid rgba(243,201,105,.28);
-  box-shadow:0 4px 12px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.04);
-  transition:transform .2s ease, box-shadow .2s ease, color .2s ease, border-color .2s ease;
-}
-.micro-links a:hover{
-  transform:translateY(-1px);
-  color:var(--gold);
-  border-color:var(--gold);
-  box-shadow:0 8px 18px rgba(0,0,0,.35), 0 0 10px rgba(243,201,105,.25);
-}
 
 /* Works */
 #works h2{margin-bottom:12px}
@@ -149,14 +128,42 @@ body.english .en{display:block}
   .zoom-ghost{transition:none}
 }
 
+/* Social (푸터 위, 아이콘+세련된 이름) */
+.social {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 50px 0 30px;
+  flex-wrap: wrap;
+}
+.social a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #b7ccff;
+  font-size: 2rem;           /* 아이콘 크기 */
+  transition: transform .25s ease, color .25s ease, text-shadow .25s ease;
+}
+.social a span {
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+  font-weight: 300;
+  opacity: 0.9;
+}
+.social a:hover {
+  color: var(--gold);
+  transform: translateY(-3px) scale(1.15);
+  text-shadow: 0 0 12px rgba(243,201,105,0.7);
+}
+
 /* Footer */
 footer{border-top:1px solid #0e1434;background:#030b1a;text-align:center;padding:40px 12px}
-.social a{margin:0 8px;color:#b7ccff;font-size:1.4rem;text-decoration:none}
-.social a:hover{color:#f3c969;text-shadow:0 0 8px rgba(243,201,105,.6)}
 footer small{display:block;color:#9fb0d8;margin-top:8px}
 
-/* Controls — Pause/Resume 제거, 사운드만 중앙 */
-#ctrl{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:15;display:flex;gap:10px}
+/* Controls — 사운드만 중앙 */
+#ctrl{position:fixed;left:50%;bottom: calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:15;display:flex;gap:10px}
 .ctrlbtn{background:rgba(12,19,48,.75);border:1px solid rgba(243,201,105,.3);border-radius:26px;color:#e9efff;padding:8px 12px;font-size:.9rem;cursor:pointer;box-shadow:0 0 10px rgba(120,170,255,.25)}
 .ctrlbtn:hover{background:rgba(12,19,48,.95);color:var(--gold);box-shadow:0 0 18px rgba(243,201,105,.35)}
 .ctrlbtn[disabled]{opacity:.45;cursor:not-allowed}
@@ -181,14 +188,6 @@ footer small{display:block;color:#9fb0d8;margin-top:8px}
     <span id="langToggle" title="한국어/English">🇰🇷 / 🇬🇧</span>
   </nav>
 </header>
-
-<!-- 미니 링크바: YouTube · Instagram · Naver 인물 · Flickr -->
-<div class="micro-links">
-  <a href="https://youtube.com/@dungzakcestlavie" target="_blank" rel="noopener">▶︎ YouTube</a>
-  <a href="https://instagram.com/dungzakcestlavie" target="_blank" rel="noopener">◎ Instagram</a>
-  <a href="https://naver.me/x95dk3l1" target="_blank" rel="noopener">N 네이버 인물</a>
-  <a href="https://www.flickr.com/photos/dungzak" target="_blank" rel="me noopener">📷 Flickr</a>
-</div>
 
 <main>
   <!-- Hero / Poem -->
@@ -218,6 +217,7 @@ footer small{display:block;color:#9fb0d8;margin-top:8px}
         <p>People who live with humble dreams gather to dance.</p>
         <p>Their circling steps form harmonies upon the rhythm of their feet,</p>
         <p>As violins scatter blue and golden light, laughing in brilliance.</p>
+        <p>Dreaming women and men clasp hands, breathing the scent of humanity, surrendering to the swift rhythm.</p>
         <p>Sharak, sharak—the rhythm expands; even onlookers sway, aware of love’s gentle kiss.</p>
         <p>Within the flowing overlap of time, they inscribe eternity into stillness.</p>
       </div>
@@ -263,19 +263,31 @@ footer small{display:block;color:#9fb0d8;margin-top:8px}
     <div class="accordion" id="reportsAcc"></div>
   </section>
 
-  <!-- Contact -->
+  <!-- Contact (아이콘 크게 + 이름 세련) -->
   <section id="contact">
     <div class="social">
-      <a href="https://youtube.com/@dungzakcestlavie" target="_blank" title="YouTube">📺</a>
-      <a href="https://instagram.com/dungzakcestlavie" target="_blank" title="Instagram">📷</a>
-      <a href="mailto:dungzakcestlavie@gmail.com" title="Email">✉️</a>
+      <a href="https://youtube.com/@dungzakcestlavie" target="_blank" title="YouTube" rel="noopener">
+        📺 <span>YouTube</span>
+      </a>
+      <a href="https://instagram.com/dungzakcestlavie" target="_blank" title="Instagram" rel="noopener">
+        📷 <span>Instagram</span>
+      </a>
+      <a href="https://www.flickr.com/photos/dungzak" target="_blank" title="Flickr" rel="me noopener">
+        📸 <span>Flickr</span>
+      </a>
+      <a href="https://naver.me/x95dk3l1" target="_blank" title="네이버 인물정보" rel="noopener">
+        🌕 <span>Naver Info</span>
+      </a>
+      <a href="mailto:dungzakcestlavie@gmail.com" title="Email">
+        ✉️ <span>Email</span>
+      </a>
     </div>
   </section>
 </main>
 
 <footer>
   <p>© 2025 등작 燈酌 DUNGZAK CESTLAVIE. All rights reserved.</p>
-  <small>Created by 등작 燈酌 DUNGZAK CESTLAVIE · Orchestrated with Lumera — Light, Memory, and Being.</small>
+  <small>등작 燈酌 DUNGZAK CESTLAVIE · 루메라의 지휘로 — 빛·기억·존재.</small>
 </footer>
 
 <!-- Lightbox -->
@@ -289,11 +301,11 @@ footer small{display:block;color:#9fb0d8;margin-top:8px}
 
 <!-- Controls (Sound only) -->
 <div id="ctrl">
-  <button class="ctrlbtn" id="soundBtn">✨ Play Light Flow</button>
+  <button class="ctrlbtn" id="soundBtn">✨ Play Cosmic Resonance</button>
   <button class="ctrlbtn" id="soundStopBtn" disabled>🔇 Stop</button>
 </div>
 
-<!-- optional audio -->
+<!-- optional audio (미사용시 제거 가능) -->
 <audio id="lightAudio" src="/audio/light-pulse.mp3" preload="auto" loop></audio>
 
 <script>
@@ -303,13 +315,13 @@ document.getElementById('langToggle').addEventListener('click',()=>{
   document.body.classList.toggle('english');
 });
 
-/* ===== Waves & Trail (no pause/resume) ===== */
+/* ===== Waves & Trail (Emotion-linked) ===== */
 const waves=document.getElementById('waves'),wctx=waves.getContext('2d');
 const trail=document.getElementById('trail'),tctx=trail.getContext('2d');
 let W,H,t=0,vis=true,tx=0,ty=0,px=0,py=0;
-function resize(){W=waves.width=trail.width=innerWidth;H=waves.height=trail.height=innerHeight;tx=px=W/2;ty=py=H/2}
+function resize(){W=waves.width=trail.width=innerWidth;H=waves.height=trail.height=innerHeight;tx=px=W/2;ty=py=H/2;}
 resize();addEventListener('resize',resize);
-document.addEventListener('visibilitychange',()=>{vis=!document.hidden});
+document.addEventListener('visibilitychange',()=>{vis=!document.hidden;});
 
 /* Emotion palette by active tab (0 warm ↔ 1 cool) */
 const emotionByKey={ 'light-memory':0.25, 'human-prayer':0.4, 'rebirth':0.55, 'existence':0.65, 'cosmos':0.8 };
@@ -320,8 +332,7 @@ function goldBlue(p){
   const r=mix(warm[0],cool[0],p), g=mix(warm[1],cool[1],p), b=mix(warm[2],cool[2],p);
   return `rgb(${r},${g},${b})`;
 }
-function raf(fn){function loop(){if(vis)fn();requestAnimationFrame(loop)}requestAnimationFrame(loop)}
-// Waves
+function raf(fn){function loop(){if(vis)fn();requestAnimationFrame(loop);}requestAnimationFrame(loop);}
 raf(()=>{t+=.008;wctx.clearRect(0,0,W,H);
   const sy=scrollY||0, base=(sy%H)/H;
   const target=emotionByKey[activeKey]??0.5;
@@ -344,7 +355,6 @@ raf(()=>{t+=.008;wctx.clearRect(0,0,W,H);
     wctx.strokeStyle=g; wctx.lineWidth=2; wctx.stroke();
   }
 });
-// Trail
 raf(()=>{const vx=tx-px,vy=ty-py,s=Math.hypot(vx,vy);
   tctx.fillStyle=`rgba(0,0,0,${0.12-Math.min(s/2000,0.08)})`;tctx.fillRect(0,0,W,H);
   px+=vx*.15;py+=vy*.15;const r=80+Math.min(s,200)*.3;
@@ -352,7 +362,7 @@ raf(()=>{const vx=tx-px,vy=ty-py,s=Math.hypot(vx,vy);
   grd.addColorStop(0,'rgba(120,170,255,.30)'); grd.addColorStop(1,'rgba(120,170,255,0)');
   tctx.fillStyle=grd; tctx.beginPath(); tctx.arc(px,py,r,0,Math.PI*2); tctx.fill();
 });
-function onMove(e){const p=e.touches?e.touches[0]:e;tx=p.clientX;ty=p.clientY}
+function onMove(e){const p=e.touches?e.touches[0]:e;tx=p.clientX;ty=p.clientY;}
 addEventListener('mousemove',onMove,{passive:true}); addEventListener('touchmove',onMove,{passive:true});
 
 /* ===== Works (5×20=100) ===== */
@@ -363,7 +373,7 @@ const sections=[
   {key:'existence',title:'Ⅳ Existence',folder:'existence'},
   {key:'cosmos',title:'Ⅴ Cosmos',folder:'cosmos'}
 ];
-function defaultMeta(i){return{title:`Untitled ${i}`,material:'Acrylic on Canvas',size:'80×100 cm',year:'2025'}}
+function defaultMeta(i){return{title:`Untitled ${i}`,material:'Acrylic on Canvas',size:'80×100 cm',year:'2025'};}
 function renderPanel(sec){
   const el=document.getElementById(`panel-${sec.key}`); let html=`<div class="art-grid">`;
   for(let i=1;i<=20;i++){
@@ -390,8 +400,8 @@ const io=new IntersectionObserver(es=>{
     }
   });
 },{rootMargin:'250px'});
-function observePanel(panelKey){
-  document.querySelectorAll(`#panel-${panelKey} img[data-src]`).forEach(img=>io.observe(img));
+function observePanel(key){
+  document.querySelectorAll(`#panel-${key} img[data-src]`).forEach(img=>io.observe(img));
 }
 observePanel('light-memory');
 
@@ -414,13 +424,11 @@ const lb=document.getElementById('lightbox'),lbImg=lb.querySelector('img'),lbCap
 const btnPrev=lb.querySelector('.lb-prev'),btnNext=lb.querySelector('.lb-next'),btnClose=lb.querySelector('.lb-close');
 let cur={secKey:null,idx:0}, lastCard=null;
 
-/* 뷰포트에 맞춘 목표 사각형 계산 (이미지 정사각 기준: max 92vw, 88vh) */
 function computeTargetRect(){
   const vw=window.innerWidth, vh=window.innerHeight;
   const size=Math.min(vw*0.92, vh*0.88);
   return {x:(vw-size)/2, y:(vh-size)/2, w:size, h:size};
 }
-/* 고스트 이미지(zoom-ghost) 생성 */
 function createGhost(fromImg){
   const r=fromImg.getBoundingClientRect();
   const ghost=new Image();
@@ -432,37 +440,6 @@ function createGhost(fromImg){
   document.body.appendChild(ghost);
   return {ghost, rect:r};
 }
-/* 열기 */
-function openLB(secKey, idx, fromCard){
-  cur={secKey,idx}; lastCard=fromCard||null;
-  const sec=sections.find(s=>s.key===secKey);
-  const src=`works/${sec.folder}/${idx}.jpg`;
-
-  const thumbImg = fromCard ? fromCard.querySelector('img') : null;
-  let ghostObj=null;
-  if(thumbImg && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    ghostObj=createGhost(thumbImg);
-    const to=computeTargetRect();
-    // 변환 행렬 계산
-    const sx=to.w/ghostObj.rect.width, sy=to.h/ghostObj.rect.height;
-    const dx=to.x - ghostObj.rect.left, dy=to.y - ghostObj.rect.top;
-    requestAnimationFrame(()=>{
-      ghostObj.ghost.style.transform=`translate(${dx}px,${dy}px) scale(${sx},${sy})`;
-    });
-    // 고스트 애니메이션 완료 후 라이트박스 표시
-    ghostObj.ghost.addEventListener('transitionend',()=>{
-      ghostObj.ghost.remove();
-      lbImg.src=src;
-      applyCaption(secKey, idx);
-      lb.classList.add('open'); lb.setAttribute('aria-hidden','false');
-    },{once:true});
-  }else{
-    // 모션 최소화 또는 썸네일 없음: 바로 열기
-    lbImg.src=src;
-    applyCaption(secKey, idx);
-    lb.classList.add('open'); lb.setAttribute('aria-hidden','false');
-  }
-}
 function applyCaption(secKey, idx){
   const card=document.querySelector(`.card[data-sec="${secKey}"][data-idx="${idx}"]`);
   if(card){
@@ -472,7 +449,29 @@ function applyCaption(secKey, idx){
     lbCap.textContent='';
   }
 }
-/* 닫기 (라스트 카드로 축소 복귀) */
+function openLB(secKey, idx, fromCard){
+  cur={secKey,idx}; lastCard=fromCard||null;
+  const sec=sections.find(s=>s.key===secKey);
+  const src=`works/${sec.folder}/${idx}.jpg`;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const thumbImg = fromCard ? fromCard.querySelector('img') : null;
+
+  if(thumbImg && !reduce){
+    const ghostObj=createGhost(thumbImg);
+    const to=computeTargetRect();
+    const sx=to.w/ghostObj.rect.width, sy=to.h/ghostObj.rect.height;
+    const dx=to.x - ghostObj.rect.left, dy=to.y - ghostObj.rect.top;
+    requestAnimationFrame(()=>{ ghostObj.ghost.style.transform=`translate(${dx}px,${dy}px) scale(${sx},${sy})`; });
+    ghostObj.ghost.addEventListener('transitionend',()=>{
+      ghostObj.ghost.remove();
+      lbImg.src=src; applyCaption(secKey, idx);
+      lb.classList.add('open'); lb.setAttribute('aria-hidden','false');
+    },{once:true});
+  }else{
+    lbImg.src=src; applyCaption(secKey, idx);
+    lb.classList.add('open'); lb.setAttribute('aria-hidden','false');
+  }
+}
 function closeLB(){
   if(!lb.classList.contains('open')) return;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -480,7 +479,6 @@ function closeLB(){
   lb.classList.remove('open'); lb.setAttribute('aria-hidden','true');
 
   if(card && !reduce){
-    // 현재 큰 이미지 위치에서 카드 위치로 고스트 역재생
     const toRect = card.querySelector('img').getBoundingClientRect();
     const fromRect = computeTargetRect();
     const ghost=new Image();
@@ -492,30 +490,21 @@ function closeLB(){
 
     const sx=toRect.width/fromRect.w, sy=toRect.height/fromRect.h;
     const dx=toRect.left - fromRect.x, dy=toRect.top - fromRect.y;
-    requestAnimationFrame(()=>{
-      ghost.style.transform=`translate(${dx}px,${dy}px) scale(${sx},${sy})`;
-      ghost.style.opacity='1';
-    });
+    requestAnimationFrame(()=>{ ghost.style.transform=`translate(${dx}px,${dy}px) scale(${sx},${sy})`; ghost.style.opacity='1'; });
     ghost.addEventListener('transitionend',()=>ghost.remove(),{once:true});
   }
 }
 function step(d){
   if(!cur.secKey) return;
-  let i=cur.idx+d; if(i<1)i=20; if(i>20)i=1;
-  cur.idx=i;
+  let i=cur.idx+d; if(i<1)i=20; if(i>20)i=1; cur.idx=i;
   const sec=sections.find(s=>s.key===cur.secKey);
   lbImg.src=`works/${sec.folder}/${i}.jpg`;
   applyCaption(cur.secKey, i);
-  // 현재 섹션에서 해당 카드 기억
   lastCard=document.querySelector(`.card[data-sec="${cur.secKey}"][data-idx="${i}"]`)||lastCard;
 }
-
-/* 카드 클릭 → 확대 */
 document.addEventListener('click',e=>{
   const card=e.target.closest('.card');
-  if(card){
-    openLB(card.dataset.sec, parseInt(card.dataset.idx,10), card);
-  }
+  if(card){ openLB(card.dataset.sec, parseInt(card.dataset.idx,10), card); }
 });
 btnClose.addEventListener('click',closeLB);
 btnPrev.addEventListener('click',()=>step(-1));
@@ -566,41 +555,64 @@ const acc=document.getElementById('reportsAcc');
   });
 })();
 
-/* ===== Warm Pulse Sound (Play/Stop only) ===== */
-const btnPlay=document.getElementById('soundBtn'),btnStop=document.getElementById('soundStopBtn');
-const audioEl=document.getElementById('lightAudio'); let ac, padNodes=null, soundOn=false;
+/* ===== Cosmic Resonance Sound (은은/상쾌/우주 공명) ===== */
+const btnPlay=document.getElementById('soundBtn'),
+      btnStop=document.getElementById('soundStopBtn');
+let ac, nodes=null, soundOn=false;
+
 async function startSound(){
   if(soundOn) return;
-  try{ await audioEl.play(); soundOn=true; }
-  catch(e){
-    ac = ac || new (window.AudioContext||window.webkitAudioContext)();
-    const gain=ac.createGain(); gain.gain.value=0.0001;
-    const o1=ac.createOscillator(); o1.type='sine'; o1.frequency.value=110;
-    const o2=ac.createOscillator(); o2.type='sine'; o2.frequency.value=110*Math.pow(2,3/1200);
-    const lpf=ac.createBiquadFilter(); lpf.type='lowpass'; lpf.frequency.value=900; lpf.Q.value=0.3;
-    const lfo=ac.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.08;
-    const lfoG=ac.createGain(); lfoG.gain.value=200;
-    lfo.connect(lfoG).connect(lpf.frequency);
-    o1.connect(gain); o2.connect(gain); gain.connect(lpf).connect(ac.destination);
-    o1.start(); o2.start(); lfo.start();
-    gain.gain.linearRampToValueAtTime(0.12, ac.currentTime+3.0);
-    padNodes={gain,o1,o2,lfo}; soundOn=true;
-  }
-  btnPlay.disabled=true; btnStop.disabled=false;
+  ac = ac || new (window.AudioContext||window.webkitAudioContext)();
+
+  // 🌌 1) Deep cosmic base
+  const base = ac.createOscillator(); base.type='sine'; base.frequency.value=56;
+  const baseGain = ac.createGain(); baseGain.gain.value=0.08;
+
+  // ✨ 2) Celestial shimmer (overtone)
+  const shimmer = ac.createOscillator(); shimmer.type='sine'; shimmer.frequency.value=560;
+  const shimmerGain = ac.createGain(); shimmerGain.gain.value=0.005;
+
+  // 💫 3) LFO breathing
+  const lfo = ac.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.05;
+  const lfoGain = ac.createGain(); lfoGain.gain.value=0.04;
+  lfo.connect(lfoGain).connect(baseGain.gain);
+
+  // 🌠 4) Soft low-pass
+  const filter = ac.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=600; filter.Q.value=0.8;
+
+  // 🎐 5) Reverb-like delay tail
+  const delay = ac.createDelay(6.0); delay.delayTime.value=2.8;
+  const feedback = ac.createGain(); feedback.gain.value=0.3;
+  delay.connect(feedback).connect(delay);
+
+  // Chain
+  base.connect(baseGain).connect(filter);
+  shimmer.connect(shimmerGain).connect(filter);
+  filter.connect(delay).connect(ac.destination);
+  filter.connect(ac.destination);
+
+  base.start(); shimmer.start(); lfo.start();
+  filter.frequency.linearRampToValueAtTime(1200, ac.currentTime + 5.0);
+
+  nodes = {base, shimmer, lfo, baseGain, shimmerGain, lfoGain, filter, delay, feedback};
+  soundOn = true; btnPlay.disabled = true; btnStop.disabled = false;
 }
 function stopSound(){
-  if(!soundOn) return;
-  if(!audioEl.paused){ audioEl.pause(); audioEl.currentTime=0; }
-  if(padNodes){
-    const g=padNodes.gain; g.gain.linearRampToValueAtTime(0.0001, ac.currentTime+1.5);
-    setTimeout(()=>{ try{padNodes.o1.stop();padNodes.o2.stop();padNodes.lfo.stop();}catch(e){} padNodes=null; },1600);
-  }
+  if(!soundOn || !nodes) return;
+  const {baseGain, shimmerGain, filter} = nodes;
+  baseGain.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 2.5);
+  shimmerGain.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 2.5);
+  filter.frequency.linearRampToValueAtTime(100, ac.currentTime + 2.5);
+  setTimeout(()=>{
+    try{ nodes.base.stop(); nodes.shimmer.stop(); nodes.lfo.stop(); }catch(e){}
+    nodes=null;
+  },2800);
   soundOn=false; btnPlay.disabled=false; btnStop.disabled=true;
 }
-btnPlay.addEventListener('click',startSound);
-btnStop.addEventListener('click',stopSound);
+btnPlay.addEventListener('click', startSound);
+btnStop.addEventListener('click', stopSound);
 
-/* 초기 이미지 관찰 시작 */
+/* 초기 관찰 시작 */
 document.querySelectorAll('#panel-light-memory img[data-src]').forEach(img=>io.observe(img));
 </script>
 </body>
