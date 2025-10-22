@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Report Editor · Auto HTML & PDF (Pro)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1020; --panel:#121a31; --ink:#eef3ff; --muted:#93a2c7; --accent:#ffd452; --line:#1e2848;
+  --a4w:210mm; --a4h:297mm; --pad:18mm; --fz:15px;
+}
+:root[data-theme="light"]{
+  --bg:#f6f8ff; --panel:#ffffff; --ink:#0a1020; --muted:#5a678a; --accent:#c18a00; --line:#dbe3ff;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:var(--fz)/1.6 Inter,system-ui,Arial}
+a{color:var(--accent)}
+.wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1480px;margin:20px auto;padding:0 16px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;min-height:60vh}
+h1{margin:0 0 12px;font-weight:800;font-size:20px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;margin:10px 0 6px;color:var(--muted);font-weight:600}
+input,select,textarea{
+  width:100%;background:color-mix(in oklab, var(--panel) 70%, black 12%);border:1px solid var(--line);color:var(--ink);
+  border-radius:10px;padding:12px 14px;outline:none
+}
+textarea{min-height:140px;resize:vertical}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{
+  background:color-mix(in oklab, var(--panel) 60%, black 20%);border:1px solid var(--line);color:var(--ink);padding:10px 14px;border-radius:10px;
+  cursor:pointer;font-weight:600
+}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#111}
+.btn.warn{background:#ff6b6b;border-color:#ff6b6b;color:white}
+.btn.ok{background:#00c9a7;border-color:#00c9a7;color:#071316}
+.small{color:var(--muted);font-size:12px}
+.badge{display:inline-block;background:color-mix(in oklab, var(--panel) 50%, black 30%);border:1px solid var(--line);color:var(--accent);padding:3px 8px;border-radius:999px;font-size:12px;margin-left:8px}
+
+.topbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.topbar .spacer{flex:1}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:8px}
+input[readonly]{color:var(--accent);font-weight:700}
+
+.preview{background:white;color:#111;border-radius:10px;overflow:auto;height:calc(100% - 48px);padding:0 0 24px;border:1px solid var(--line)}
+.paper{width:var(--a4w); min-height:var(--a4h); margin:18px auto; background:white; color:#111; padding:var(--pad); box-shadow:0 8px 32px rgba(0,0,0,.25); }
+.paper h1{font-size:calc(var(--fz) + 9px);line-height:1.25;margin:0 0 6px}
+.paper .meta{color:#4d5c86;margin-bottom:12px}
+.paper h2{font-size:calc(var(--fz) + 3px);margin:18px 0 6px}
+.paper p, .paper li{margin:8px 0}
+.paper img{max-width:100%;display:block;margin:8px auto;border-radius:6px}
+.caption{font-size:12px;color:#5b6b95}
+hr.sep{border:none;border-top:1px solid #e7eeff;margin:14px 0}
+.drag{cursor:grab}
+.counter{display:flex;gap:12px;color:var(--muted);font-size:12px}
+
+@media print{
+  body{background:white}
+  .wrap{display:block}
+  .panel.left{display:none}
+  .panel.right{border:none;padding:0}
+  .paper{box-shadow:none;margin:0 auto;border:none}
+  @page{size: A4; margin: 12mm}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <!-- LEFT -->
+  <div class="panel left">
+    <div class="topbar">
+      <h1>Report Editor <span class="badge">Auto HTML + PDF · Pro</span></h1>
+      <div class="spacer"></div>
+      <button class="btn" id="themeBtn">테마</button>
+      <select id="marginSel" class="btn">
+        <option value="12">여백 12mm</option>
+        <option value="16">여백 16mm</option>
+        <option value="18" selected>여백 18mm</option>
+        <option value="22">여백 22mm</option>
+      </select>
+      <select id="fzSel" class="btn">
+        <option value="14">폰트 14px</option>
+        <option value="15" selected>폰트 15px</option>
+        <option value="16">폰트 16px</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Title (EN)</label>
+        <input id="title_en" placeholder="On Light, Memory, and Being">
+      </div>
+      <div>
+        <label>Title (KO)</label>
+        <input id="title_ko" placeholder="빛, 기억, 존재에 관하여">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Series</label>
+        <input id="series" value="Aesthetic Reports">
+      </div>
+      <div>
+        <label>Year</label>
+        <input id="year" value="2025">
+      </div>
+    </div>
+
+    <div class="kv">
+      <label>Report ID</label>
+      <input id="report_id" placeholder="dcar-01-2025">
+    </div>
+    <div class="kv">
+      <label>파일명</label>
+      <div style="display:flex;gap:8px">
+        <input id="report_filename" readonly>
+        <button class="btn" id="copyFilename">복사</button>
+        <button class="btn" id="newBtn" title="새로 만들기(필드 초기화)">새로</button>
+        <button class="btn" id="dupBtn" title="현재 값 복제(새 ID)">복제</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Abstract (Markdown 가능)</label>
+        <textarea id="abstract" placeholder="요약 붙여넣기…"></textarea>
+      </div>
+      <div>
+        <label>표지 이미지 URL (선택)</label>
+        <input id="cover" placeholder="/images/artworks/light-memory-1.jpg">
+        <div class="btns">
+          <button class="btn" id="insertCover">본문에 표지삽입</button>
+          <button class="btn" id="insertImg">본문에 이미지삽입</button>
+        </div>
+      </div>
+    </div>
+
+    <label>Body (Markdown) — “## 섹션 제목” 으로 구분</label>
+    <textarea id="body" placeholder="아주 긴 본문을 그대로 붙여넣어도 됩니다.&#10;&#10;## I. 서문&#10;내용…"></textarea>
+    <div class="btns">
+      <button class="btn" id="tpl3">템플릿 3섹션</button>
+      <button class="btn" id="tpl5">템플릿 5섹션</button>
+      <button class="btn" id="tpl8">템플릿 8섹션</button>
+      <button class="btn" id="sortSections">섹션 재정렬(드래그)</button>
+      <span class="counter" id="counter"></span>
+    </div>
+
+    <hr style="border:none;border-top:1px dashed var(--line);margin:12px 0">
+
+    <div class="row">
+      <div>
+        <label>보고서 불러오기</label>
+        <div style="display:flex;gap:8px">
+          <select id="loadSel" style="flex:1"><option value="">— 목록 로드 —</option></select>
+          <button class="btn" id="loadBtn">로드</button>
+        </div>
+        <div class="small">※ 목록은 <code>/data/reports.json</code>에서 자동 로드</div>
+      </div>
+      <div>
+        <label>보고서 관리</label>
+        <div class="btns">
+          <button class="btn ok" id="btnPreview">미리보기</button>
+          <button class="btn" id="btnHTML">HTML 다운로드</button>
+          <button class="btn" id="btnCopyHTML">HTML 복사</button>
+          <button class="btn" id="btnCopyMD">Markdown 복사</button>
+          <button class="btn" id="btnPDF" title="브라우저 인쇄로 고해상도 A4 출력">PDF 미리보기</button>
+          <button class="btn primary" id="btnSave">reports.json 저장</button>
+          <button class="btn warn" id="btnDelete">보고서 삭제</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="small" id="msg"></div>
+    <p class="small" style="margin-top:8px">※ GitHub 토큰/저장소 설정은 기존 관리자(localStorage: owner/repo/branch/token)를 자동 사용합니다.</p>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="panel right">
+    <div class="btns" style="margin-top:0">
+      <span class="small">오른쪽은 인쇄용 A4 미리보기 · 여백/폰트 상단 토글</span>
+    </div>
+    <div class="preview">
+      <div class="paper" id="paper"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== 기본 유틸 ===== */
+const $ = s => document.querySelector(s);
+const msg = (t, ok=false)=> { const el = $('#msg'); el.textContent=t; el.style.color=ok?'#00c9a7':'#ff6b6b'; if(t) console.log(t); }
+const esc = s => (s||'').replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+
+/* ===== 마크다운 → HTML ===== */
+function md2html(md){ try{ return marked.parse(md||''); }catch{ return (md||'').replace(/\n/g,'<br>'); } }
+
+/* ===== 섹션 split ===== */
+function splitSections(md){
+  const lines = (md||'').split(/\r?\n/);
+  const out=[]; let cur={title:'', body:[]};
+  for(const ln of lines){
+    const m = ln.match(/^##\s+(.*)$/);
+    if(m){ if(cur.title || cur.body.length) out.push(cur); cur={title:m[1].trim(), body:[]}; }
+    else { cur.body.push(ln); }
+  }
+  if(cur.title || cur.body.join('').trim()) out.push(cur);
+  return out.map(s=>({title:s.title, body:s.body.join('\n'), html: md2html(s.body.join('\n'))}));
+}
+
+/* ===== 카운터 ===== */
+function updateCounter(){
+  const txt = $('#body').value || '';
+  const words = (txt.match(/\S+/g)||[]).length;
+  const chars = txt.length;
+  const paras = (txt.trim().match(/\n\s*\n/g)||[]).length + (txt.trim()?1:0);
+  $('#counter').textContent = `단어 ${words} · 글자 ${chars} · 문단 ${paras}`;
+}
+
+/* ===== 파일명 자동 ===== */
+function updateFilename(){
+  const id = $('#report_id').value.trim() || 'untitled';
+  const year = $('#year').value.trim() || new Date().getFullYear();
+  $('#report_filename').value = `${id}-${year}.html`;
+}
+
+/* ===== 미리보기 렌더 ===== */
+function render(){
+  const r = collect();
+  const sections = splitSections(r.body_md);
+  const metaTop = `
+    <h1>${esc(r.title_en)||'(Untitled)'}<div class="meta">${esc(r.title_ko)||''}</div></h1>
+    <div class="meta">${esc(r.series)||''} · ${esc(r.year)||''} · ID: ${esc(r.id)||''}</div>
+    ${ r.cover ? `<img src="${esc(r.cover)}" alt="cover">` : '' }
+    ${ r.abstract ? `<h2>Abstract</h2><div>${md2html(r.abstract)}</div>` : '' }
+    <hr class="sep">
+  `;
+  const html = metaTop + sections.map(s=>`
+    <section class="section">
+      ${s.title?`<h2>${esc(s.title)}</h2>`:''}
+      <div>${s.html}</div>
+    </section>
+  `).join('<hr class="sep">');
+  $('#paper').innerHTML = html;
+}
+
+/* ===== 데이터 수집 ===== */
+function collect(){
+  return {
+    id: $('#report_id').value.trim(),
+    title_en: $('#title_en').value.trim(),
+    title_ko: $('#title_ko').value.trim(),
+    series: $('#series').value.trim(),
+    year: $('#year').value.trim(),
+    abstract: $('#abstract').value,
+    body_md: $('#body').value,
+    cover: $('#cover').value.trim()
+  };
+}
+
+/* ===== HTML 다운로드/복사 ===== */
+function download(filename, text, mime='text/html;charset=utf-8'){
+  const blob = new Blob([text], {type:mime});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+async function copyClipboard(text){
+  try{ await navigator.clipboard.writeText(text); msg('클립보드 복사 완료', true); }
+  catch{ msg('클립보드 복사 실패'); }
+}
+
+/* ===== GitHub API ===== */
+function getConn(){
+  const owner  = localStorage.getItem('owner')  || localStorage.getItem('gh_owner');
+  const repo   = localStorage.getItem('repo')   || localStorage.getItem('gh_repo');
+  const branch = localStorage.getItem('branch') || 'main';
+  const token  = localStorage.getItem('token')  || localStorage.getItem('gh_token');
+  return {owner,repo,branch,token};
+}
+async function ghGet(path){
+  const {owner,repo,branch,token} = getConn();
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${branch}`;
+  const r = await fetch(url,{headers:{Authorization:`Bearer ${token}`,Accept:'application/vnd.github+json'}});
+  if(!r.ok) throw new Error('GET '+r.status);
+  return r.json();
+}
+async function ghPut(path, content, message, sha){
+  const {owner,repo,branch,token} = getConn();
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+  const body = {message, content: btoa(unescape(encodeURIComponent(content))), branch};
+  if(sha) body.sha=sha;
+  const r = await fetch(url,{method:'PUT', headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  if(!r.ok){ const e = await r.text(); throw new Error('PUT '+r.status+' '+e); }
+  return r.json();
+}
+
+/* ===== reports.json 저장/삭제/로드 ===== */
+async function saveReports(){
+  const r = collect();
+  if(!r.id){ msg('Report ID를 입력하세요.'); return; }
+  const path = 'data/reports.json';
+  let json={reports:[]}, sha=null;
+  try{ const raw=await ghGet(path); sha=raw.sha; json=JSON.parse(atob(raw.content.replace(/\n/g,''))); }catch(e){ json={reports:[]}; }
+  json.reports ||= [];
+  const found = json.reports.find(x=>x.id===r.id);
+  const payload = {...r, updated_at:new Date().toISOString()};
+  if(found) Object.assign(found, payload); else json.reports.push(payload);
+  await ghPut(path, JSON.stringify(json,null,2), `update report: ${r.id}`, sha);
+  msg('reports.json 저장 완료!', true);
+  await loadReportList();
+}
+async function deleteReport(){
+  const id = $('#report_id').value.trim();
+  if(!id){ msg('삭제할 Report ID가 없습니다.'); return; }
+  if(!confirm(`정말 삭제할까요? (${id})\n/data/reports.json에서 제거됩니다.`)) return;
+  const path = 'data/reports.json';
+  let json={reports:[]}, sha=null;
+  try{ const raw=await ghGet(path); sha=raw.sha; json=JSON.parse(atob(raw.content.replace(/\n/g,''))); }catch(e){ msg('reports.json이 없습니다.'); return; }
+  const before = json.reports.length;
+  json.reports = json.reports.filter(x=>x.id!==id);
+  if(json.reports.length===before){ msg('해당 ID가 존재하지 않습니다.'); return; }
+  await ghPut(path, JSON.stringify(json,null,2), `delete report: ${id}`, sha);
+  msg('삭제 완료', true);
+  await loadReportList();
+}
+async function loadReportList(){
+  const sel = $('#loadSel'); sel.innerHTML='<option value="">— 목록 로드 —</option>';
+  try{
+    const raw = await ghGet('data/reports.json');
+    const json = JSON.parse(atob(raw.content.replace(/\n/g,'')));
+    (json.reports||[]).forEach(r=>{
+      const opt = document.createElement('option'); opt.value=r.id; opt.textContent = `${r.id} — ${r.title_en||''}`;
+      sel.appendChild(opt);
+    });
+  }catch(e){ /* ignore */ }
+}
+async function loadReportById(id){
+  if(!id) return;
+  try{
+    const raw = await ghGet('data/reports.json');
+    const json = JSON.parse(atob(raw.content.replace(/\n/g,'')));
+    const r = (json.reports||[]).find(x=>x.id===id);
+    if(!r){ msg('해당 ID 없음'); return; }
+    // 채우기
+    $('#report_id').value = r.id||''; $('#title_en').value=r.title_en||''; $('#title_ko').value=r.title_ko||'';
+    $('#series').value=r.series||''; $('#year').value=r.year||''; $('#abstract').value=r.abstract||'';
+    $('#body').value=r.body_md||''; $('#cover').value=r.cover||'';
+    render(); updateFilename(); persistAll();
+    msg('로드 완료', true);
+  }catch(e){ msg('로드 실패'); }
+}
+
+/* ===== 템플릿/도구 ===== */
+function tpl(n){
+  const heads = ['Ⅰ. 서문','Ⅱ. 기억','Ⅲ. 존재','Ⅳ. 빛','Ⅴ. 감응','Ⅵ. 윤회','Ⅶ. 우주','Ⅷ. 맺음'];
+  const arr = heads.slice(0,n).map(h=>`## ${h}\n내용을 입력하세요.\n`);
+  $('#body').value = arr.join('\n');
+  render(); persist('body');
+}
+function makeDraggableSections(){
+  const md = $('#body').value;
+  const secs = splitSections(md);
+  if(!secs.length){ msg('재정렬할 섹션이 없습니다.'); return; }
+  const container = document.createElement('div');
+  container.style.border='1px dashed var(--line)'; container.style.borderRadius='10px'; container.style.padding='10px';
+  container.style.background='color-mix(in oklab, var(--panel) 65%, black 8%)';
+  container.innerHTML = `<div class="small" style="margin-bottom:8px">섹션을 드래그해 순서를 바꾸고, 완료를 누르세요.</div>`;
+  secs.forEach((s,i)=>{
+    const item = document.createElement('div');
+    item.className='drag'; item.draggable=true;
+    item.style.padding='8px 10px'; item.style.border='1px solid var(--line)'; item.style.borderRadius='8px'; item.style.margin='6px 0';
+    item.style.background='color-mix(in oklab, var(--panel) 50%, black 15%)';
+    item.textContent = s.title||`(무제 섹션 ${i+1})`;
+    container.appendChild(item);
+  });
+  const done = document.createElement('button'); done.className='btn ok'; done.textContent='재정렬 완료';
+  done.style.marginTop='8px';
+  const cancel = document.createElement('button'); cancel.className='btn'; cancel.textContent='취소';
+  cancel.style.marginLeft='8px';
+  container.append(done, cancel);
+  const overlay = document.createElement('div');
+  overlay.style.position='fixed'; overlay.style.inset='0'; overlay.style.background='rgba(0,0,0,.4)'; overlay.style.zIndex='9999';
+  const modal = document.createElement('div');
+  modal.style.maxWidth='420px'; modal.style.margin='10vh auto'; modal.style.padding='14px'; modal.style.background='var(--panel)';
+  modal.style.border='1px solid var(--line)'; modal.style.borderRadius='12px';
+  modal.append(container); overlay.append(modal); document.body.append(overlay);
+
+  let dragging = null;
+  container.querySelectorAll('.drag').forEach(el=>{
+    el.addEventListener('dragstart',()=>{ dragging=el; el.style.opacity=.5; });
+    el.addEventListener('dragend',()=>{ dragging=null; el.style.opacity=1; });
+    el.addEventListener('dragover',e=>{ e.preventDefault(); });
+    el.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(!dragging || dragging===el) return;
+      container.insertBefore(dragging, el.nextSibling);
+    });
+  });
+
+  done.onclick = ()=>{
+    const order = [...container.querySelectorAll('.drag')].map(el=>el.textContent.trim());
+    // order에 맞춰 재구성
+    const re = [];
+    order.forEach(t=>{
+      const found = secs.find(s=> (s.title||'')===t );
+      if(found) re.push(found);
+    });
+    // 누락/중복 처리
+    secs.forEach(s=>{ if(!re.includes(s)) re.push(s); });
+    const newMD = re.map(s=> (s.title?`## ${s.title}\n`:'') + (s.body||'') ).join('\n\n');
+    $('#body').value = newMD;
+    overlay.remove();
+    render(); persist('body');
+    msg('섹션 재정렬 완료', true);
+  };
+  cancel.onclick = ()=>overlay.remove();
+}
+
+/* ===== 로컬 자동 저장/복구 ===== */
+function persist(id){ localStorage.setItem('report_edit_'+id, $('#'+id).value); }
+function persistAll(){ ['title_en','title_ko','series','year','report_id','abstract','body','cover'].forEach(persist); }
+function restoreAll(){ ['title_en','title_ko','series','year','report_id','abstract','body','cover'].forEach(id=>{ const v=localStorage.getItem('report_edit_'+id); if(v!=null) $('#'+id).value=v; }); }
+
+/* ===== 이벤트 바인딩 ===== */
+function bind(){
+  // 테마/옵션
+  $('#themeBtn').onclick = ()=>{ const rt=document.documentElement; rt.dataset.theme = (rt.dataset.theme==='dark'?'light':'dark'); };
+  $('#marginSel').onchange = e=>{ document.documentElement.style.setProperty('--pad', e.target.value+'mm'); window.print && render(); };
+  $('#fzSel').onchange = e=>{ document.documentElement.style.setProperty('--fz', e.target.value+'px'); render(); };
+
+  // 미리보기·내보내기
+  $('#btnPreview').onclick = render;
+  $('#btnPDF').onclick = ()=>{ render(); window.print(); };
+  $('#btnHTML').onclick = ()=>{
+    render();
+    const html = `<!doctype html><meta charset="utf-8"><title>${esc($('#title_en').value||'report')}</title>`+
+                 `<style>${getPrintCSS()}</style><div class="paper">${$('#paper').innerHTML}</div>`;
+    download(`${($('#report_id').value||'report')}.html`, html);
+  };
+  $('#btnCopyHTML').onclick = ()=>{ render(); copyClipboard($('#paper').innerHTML); };
+  $('#btnCopyMD').onclick = ()=> copyClipboard($('#body').value);
+
+  // 저장/삭제/로드
+  $('#btnSave').onclick = saveReports;
+  $('#btnDelete').onclick = deleteReport;
+  $('#loadBtn').onclick = ()=> loadReportById($('#loadSel').value);
+
+  // 입력 반응
+  ['title_en','title_ko','series','year','report_id','abstract','body','cover'].forEach(id=>{
+    $('#'+id).addEventListener('input', ()=>{
+      if(id==='year'||id==='report_id') updateFilename();
+      if(id==='body') updateCounter();
+      render(); persist(id);
+    });
+  });
+
+  // 파일명 복사
+  $('#copyFilename').onclick = ()=>{ navigator.clipboard.writeText($('#report_filename').value); msg('파일명 복사됨', true); };
+
+  // 새로/복제
+  $('#newBtn').onclick = ()=>{
+    if(!confirm('모든 입력을 초기화할까요?')) return;
+    ['title_en','title_ko','series','year','report_id','abstract','body','cover'].forEach(id=>$('#'+id).value='');
+    persistAll(); updateFilename(); updateCounter(); render(); msg('필드 초기화', true);
+  };
+  $('#dupBtn').onclick = ()=>{
+    const id = $('#report_id').value.trim()||'dcar';
+    const n = Date.now().toString().slice(-6);
+    $('#report_id').value = `${id}-copy-${n}`;
+    updateFilename(); persist('report_id'); msg('ID 복제됨', true);
+  };
+
+  // 템플릿/이미지
+  $('#tpl3').onclick = ()=>tpl(3);
+  $('#tpl5').onclick = ()=>tpl(5);
+  $('#tpl8').onclick = ()=>tpl(8);
+  $('#sortSections').onclick = makeDraggableSections;
+  $('#insertCover').onclick = ()=>{ const u=$('#cover').value.trim(); if(!u) return msg('표지 URL 없음'); insertAtBody(`\n\n<img src="${u}" alt="cover">\n\n`); };
+  $('#insertImg').onclick = ()=>{
+    const u = prompt('본문에 삽입할 이미지 URL 또는 /images 경로를 입력하세요','/images/artworks/example.jpg');
+    if(!u) return;
+    insertAtBody(`\n\n<img src="${u}" alt="">\n\n`);
+  };
+}
+
+/* ===== 보조 ===== */
+function insertAtBody(snippet){
+  const el = $('#body');
+  const {selectionStart:s, selectionEnd:e} = el;
+  const v = el.value;
+  el.value = v.slice(0,s) + snippet + v.slice(e);
+  el.focus(); el.selectionStart = el.selectionEnd = s + snippet.length;
+  render(); persist('body'); updateCounter();
+}
+function getPrintCSS(){
+  const pad = getComputedStyle(document.documentElement).getPropertyValue('--pad').trim()||'18mm';
+  const fz = getComputedStyle(document.documentElement).getPropertyValue('--fz').trim()||'15px';
+  return `
+    @media print{@page{size:A4;margin:${pad}} .paper{box-shadow:none;margin:0}}
+    .paper{font:${fz}/1.6 Inter,system-ui,Arial;color:#111;width:210mm;min-height:297mm;margin:18px auto;padding:${pad}}
+    .paper h1{font-size:calc(${fz} + 9px);margin:0 0 6px}
+    .paper .meta{color:#5b6b95;margin-bottom:12px}
+    .paper h2{font-size:calc(${fz} + 3px);margin:18px 0 6px}
+    .paper p,.paper li{margin:8px 0}
+    hr{border:none;border-top:1px solid #e7eeff;margin:14px 0}
+    img{max-width:100%;display:block;margin:8px auto;border-radius:6px}
+  `;
+}
+
+/* ===== 초기화 ===== */
+function init(){
+  restoreAll();
+  updateFilename();
+  updateCounter();
+  render();
+  bind();
+  loadReportList();
+}
+init();
+</script>
+</body>
+</html>

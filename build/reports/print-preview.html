@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DUNGZAK CESTLAVIE — Report & Portfolio Manager</title>
+
+<!-- UI -->
+<style>
+  :root { --bg:#0b0c0f; --panel:#111319; --fg:#e9edf1; --muted:#99a3ad; --acc:#ffd86b; --hi:#00c9a7; --line:#262b36; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.65 Pretendard,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial}
+  header{padding:28px 20px;text-align:center;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0f1220,transparent)}
+  h1{margin:0 0 6px;font-weight:700;font-size:22px;color:var(--acc)}
+  .wrap{max-width:1000px;margin:24px auto;padding:0 16px}
+  .grid{display:grid;gap:16px}
+  @media (min-width:960px){ .grid{grid-template-columns:1fr 1fr} }
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 16px}
+  .card h3{margin:0 0 12px;font-size:16px}
+  label{display:block;margin:8px 0 4px;color:var(--muted)}
+  input,textarea,select{
+    width:100%;background:#0f1117;color:var(--fg);border:1px solid #1b2130;border-radius:10px;padding:10px 12px;font:inherit
+  }
+  textarea{min-height:110px;resize:vertical}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+  .btn.acc{background:var(--acc);color:#161616}
+  .btn.ok{background:var(--hi);color:white}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--fg)}
+  .muted{color:var(--muted)}
+  .list-item{padding:10px 0;border-top:1px dashed var(--line)}
+  .kvs{display:flex;gap:8px;flex-wrap:wrap}
+  .kv{background:#0f1117;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--muted)}
+  .series{margin-top:8px}
+  .series h4{margin:14px 0 8px;font-size:14px;color:#c9d4e5}
+  .art-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(min-width:720px){ .art-grid{grid-template-columns:repeat(3,1fr)} }
+  .art{border:1px solid var(--line);border-radius:10px;padding:8px;background:#0f1117}
+  .art img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:6px;background:#0b0c0f}
+  .art label{display:flex;gap:8px;align-items:center;margin-top:6px}
+  .cap{font-size:12px;color:#b6c0cc}
+  .note{margin-top:8px;color:#b6c0cc;font-size:12px}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#172033;border:1px solid #22314a;color:#9fb5d1;font-size:12px}
+</style>
+
+<!-- jsPDF for PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-NaWTH0Zg4c9uC9r6sGqJqT+1xG4kGq8k+vn7Z4m0O0zQ8t7u2j8VtQxwGqQ5Kq4b4n8s7+vU6mQx9sH2pZQFmQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+<header>
+  <h1>등작 燈酌 — Report & Portfolio Manager</h1>
+  <div class="muted">보고서 작성 · 작품 선택 · 고품질 PDF 자동 생성</div>
+</header>
+
+<div class="wrap grid">
+
+  <!-- Report editor -->
+  <section class="card">
+    <h3>➕ 새 미학 보고서</h3>
+    <label>Report ID</label>
+    <input id="r_id" placeholder="예: dcar01" />
+    <label>Title (EN)</label>
+    <input id="r_en" placeholder="On Light, Memory, and Being" />
+    <label>Title (KO)</label>
+    <input id="r_ko" placeholder="빛, 기억, 존재에 관하여" />
+    <label>Year</label>
+    <input id="r_year" type="number" value="2025" />
+    <label>Abstract</label>
+    <textarea id="r_abs" placeholder="요약 내용을 입력하세요."></textarea>
+    <div class="row">
+      <button class="btn acc" onclick="addReport()">Save in page</button>
+      <span class="muted">※ JSON에 병합은 저장 후 ‘데이터 다운로드’ 버튼으로 추출 → GitHub에 업로드</span>
+    </div>
+  </section>
+
+  <!-- Report list -->
+  <section class="card">
+    <h3>📚 보고서 목록</h3>
+    <div id="reportList"></div>
+    <div class="row" style="margin-top:8px">
+      <button class="btn ghost" onclick="downloadReportsJSON()">reports.json 내보내기</button>
+    </div>
+  </section>
+
+  <!-- Artwork picker -->
+  <section class="card" style="grid-column:1/-1">
+    <h3>🖼️ 작품 선택 (섹션당 최대 20점)</h3>
+    <div class="note">* <span class="pill">규칙</span> 각 시리즈(섹션)별 최대 20점만 포트폴리오에 포함됩니다. 초과 선택 시 자동으로 잘립니다.</div>
+    <div id="artContainer"></div>
+  </section>
+
+  <!-- Portfolio build -->
+  <section class="card" style="grid-column:1/-1">
+    <h3>📄 포트폴리오 PDF 생성</h3>
+    <div class="row">
+      <select id="reportForPDF"></select>
+      <button class="btn ok" onclick="buildPortfolioPDF()">포트폴리오 PDF 만들기</button>
+      <span class="muted">선택한 보고서 + 선택 작품(섹션 최대 20)으로 합쳐서 한 번에 PDF 생성</span>
+    </div>
+  </section>
+</div>
+
+<script>
+/** ---------- 상태 ---------- **/
+let reports = [];          // data/reports.json 로드 + 화면에서 추가
+let artworksBySeries = {}; // data/artworks.json 로드 후 시리즈별 그룹
+const ART_LIMIT_PER_SERIES = 20;
+
+/** ---------- 데이터 로드 ---------- **/
+(async function init(){
+  await loadReports();
+  await loadArtworks();
+  renderReportList();
+  renderReportSelect();
+  renderArtworks();
+})();
+
+async function loadReports(){
+  try{
+    const res = await fetch('../data/reports.json?__='+Date.now());
+    const json = await res.json();
+    reports = json.reports || [];
+  }catch(e){
+    reports = [];
+  }
+}
+async function loadArtworks(){
+  // 기대 구조: data/artworks.json { "items":[ {id,title,series,year,image:"/images/artworks/xxx.jpg", ...}, ... ] }
+  try{
+    const res = await fetch('../data/artworks.json?__='+Date.now());
+    const data = await res.json();
+    const items = data.items || [];
+    artworksBySeries = groupBy(items, x => x.series || 'Uncategorized');
+  }catch(e){
+    artworksBySeries = {};
+  }
+}
+
+/** ---------- 유틸 ---------- **/
+function groupBy(arr, keyFn){
+  return arr.reduce((m, it)=>{
+    const k = keyFn(it);
+    (m[k]||(m[k]=[])).push(it);
+    return m;
+  }, {});
+}
+function el(tag, attrs={}, ...children){
+  const n = document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs)){
+    if(k==='class') n.className=v;
+    else if(k==='html') n.innerHTML=v;
+    else n.setAttribute(k,v);
+  }
+  for(const c of children) n.append(c);
+  return n;
+}
+function toDataURL(url){ // 이미지 URL → dataURL
+  return fetch(url).then(r=>r.blob())
+    .then(b=>new Promise(res=>{
+      const fr = new FileReader();
+      fr.onload=()=>res(fr.result);
+      fr.readAsDataURL(b);
+    }));
+}
+
+/** ---------- 보고서 ---------- **/
+function addReport(){
+  const r = {
+    id: r_id.value.trim(),
+    title_en: r_en.value.trim(),
+    title_ko: r_ko.value.trim(),
+    year: r_year.value.trim(),
+    abstract: r_abs.value.trim()
+  };
+  if(!r.id || !r.title_en){ alert('ID와 영문 제목은 필수입니다.'); return; }
+  const exist = reports.find(x=>x.id===r.id);
+  if(exist){ Object.assign(exist, r); }
+  else reports.push(r);
+  renderReportList(); renderReportSelect();
+  alert('✅ 보고서가 화면 상태에 저장되었습니다.\n(데이터 파일 반영은 "reports.json 내보내기" 사용)');
+}
+function renderReportList(){
+  const box = document.getElementById('reportList');
+  box.innerHTML='';
+  if(!reports.length){ box.innerHTML='<div class="muted">등록된 보고서가 없습니다.</div>'; return; }
+  reports.forEach(r=>{
+    box.appendChild(el('div',{class:'list-item'}, 
+      el('div',{class:'kvs'},
+        el('span',{class:'kv'},`ID: ${r.id}`),
+        el('span',{class:'kv'},`Year: ${r.year||'-'}`)
+      ),
+      el('div',{style:'margin-top:6px'}, `${r.title_en} / ${r.title_ko||''}`),
+      el('div',{class:'muted',style:'margin-top:4px'}, (r.abstract||'').slice(0,140) + (r.abstract?.length>140?'…':'')),
+      el('div',{class:'row',style:'margin-top:8px'},
+        (()=>{ const b=el('button',{class:'btn ghost'},'📄 개별 PDF'); b.onclick=()=>downloadReportPDF(r.id); return b;})()
+      )
+    ));
+  });
+}
+function renderReportSelect(){
+  const sel = document.getElementById('reportForPDF');
+  sel.innerHTML='';
+  if(!reports.length){ sel.appendChild(el('option',{value:''},'보고서가 없습니다')); return; }
+  for(const r of reports){
+    sel.appendChild(el('option',{value:r.id}, `${r.id} — ${r.title_en}`));
+  }
+}
+function downloadReportsJSON(){
+  const blob = new Blob([JSON.stringify({reports},null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'reports.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/** ---------- 작품 ---------- **/
+function renderArtworks(){
+  const root = document.getElementById('artContainer');
+  root.innerHTML='';
+
+  const seriesNames = Object.keys(artworksBySeries);
+  if(!seriesNames.length){
+    root.innerHTML = '<div class="muted">작품 데이터가 없습니다. (data/artworks.json)</div>';
+    return;
+  }
+
+  seriesNames.forEach(name=>{
+    const group = artworksBySeries[name] || [];
+    const wrap = el('div',{class:'series'});
+    wrap.appendChild(el('h4',{}, `${name} (총 ${group.length}점 · 최대 20 선택)`));
+
+    const grid = el('div',{class:'art-grid'});
+    group.forEach((a,idx)=>{
+      const id = `art_${name}_${idx}`;
+      grid.appendChild(
+        el('div',{class:'art'},
+          el('img',{src: a.image || `/images/artworks/${a.id||idx}.jpg` , alt:a.title||a.id||'art'}),
+          el('label',{},
+            el('input',{type:'checkbox', 'data-series':name, 'data-id':a.id||`${name}-${idx}`, 'data-title':a.title||'', 'data-year':a.year||'', 'data-image': (a.image||'') }),
+            el('span',{class:'cap'}, `${a.title||'Untitled'} · ${a.year||''}`)
+          )
+        )
+      );
+    });
+    wrap.appendChild(grid);
+    wrap.appendChild(el('div',{class:'note'}, `선택 수 초과 시 자동으로 앞 20점까지 포함됩니다.`));
+    root.appendChild(wrap);
+  });
+}
+
+function getSelectedArtworksBySeries(){
+  const checked = [...document.querySelectorAll('#artContainer input[type=checkbox]:checked')];
+  const grouped = {};
+  for(const c of checked){
+    const s = c.dataset.series;
+    (grouped[s]||(grouped[s]=[])).push({
+      id:c.dataset.id, title:c.dataset.title, year:c.dataset.year, image:c.dataset.image
+    });
+  }
+  // 시리즈별 최대 20점 제한
+  for(const s of Object.keys(grouped)){
+    grouped[s] = grouped[s].slice(0, ART_LIMIT_PER_SERIES);
+  }
+  return grouped;
+}
+
+/** ---------- 개별 보고서 PDF ---------- **/
+async function downloadReportPDF(reportId){
+  const r = reports.find(x=>x.id===reportId);
+  if(!r) return alert('보고서를 찾을 수 없습니다.');
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'pt', format:'a4'});
+
+  let y=80;
+  doc.setFontSize(18); doc.text('DUNGZAK CESTLAVIE — Aesthetic Report', 40, y); y+=24;
+  doc.setFontSize(14); doc.text(`ID: ${r.id}`, 40, y); y+=18;
+  doc.text(`Title (EN): ${r.title_en}`, 40, y); y+=18;
+  if(r.title_ko){ doc.text(`Title (KO): ${r.title_ko}`, 40, y); y+=18; }
+  if(r.year){ doc.text(`Year: ${r.year}`, 40, y); y+=24; }
+  doc.setFontSize(12);
+  doc.text('Abstract:', 40, y); y+=18;
+
+  const lines = doc.splitTextToSize(r.abstract||'', 520);
+  lines.forEach(line=>{
+    if(y>780){ doc.addPage(); y=60; }
+    doc.text(line, 40, y); y+=16;
+  });
+
+  doc.save(`${r.id}.pdf`);
+}
+
+/** ---------- 포트폴리오 PDF (보고서 + 작품) ---------- **/
+async function buildPortfolioPDF(){
+  const reportId = (document.getElementById('reportForPDF').value||'').trim();
+  if(!reportId) return alert('먼저 보고서를 선택하세요.');
+  const r = reports.find(x=>x.id===reportId);
+  if(!r) return alert('보고서를 찾을 수 없습니다.');
+
+  const selected = getSelectedArtworksBySeries();
+  const seriesNames = Object.keys(selected);
+  if(!seriesNames.length) return alert('포함할 작품을 선택하세요.');
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'pt', format:'a4'});
+  let y = 100;
+
+  // 표지
+  doc.setFillColor(18,22,33);
+  doc.rect(0,0,595,842,'F');
+  doc.setTextColor(255,216,107);
+  doc.setFontSize(22);
+  doc.text('DUNGZAK CESTLAVIE — Portfolio', 50, y); y+=30;
+  doc.setTextColor(233,237,241);
+  doc.setFontSize(14);
+  doc.text(`Report — ${r.id}`, 50, y); y+=18;
+  doc.text(r.title_en, 50, y); y+=18;
+  if(r.title_ko){ doc.text(r.title_ko, 50, y); y+=18; }
+  if(r.year){ doc.text(`Year: ${r.year}`, 50, y); }
+  doc.addPage();
+
+  // Abstract 페이지
+  y=70;
+  doc.setFontSize(16); doc.text('Abstract', 50, y); y+=22;
+  doc.setFontSize(12);
+  doc.setTextColor(200,210,220);
+  const absLines = doc.splitTextToSize(r.abstract||'', 500);
+  for(const line of absLines){
+    if(y>780){ doc.addPage(); y=60; }
+    doc.text(line, 50, y); y+=16;
+  }
+  doc.addPage();
+
+  // 시리즈별 아트워크 썸네일 + 캡션
+  doc.setTextColor(233,237,241);
+  for(const s of seriesNames){
+    y=70;
+    doc.setFontSize(15); doc.text(`Series — ${s} (max ${ART_LIMIT_PER_SERIES})`, 50, y); y+=18;
+    const items = selected[s]||[];
+
+    // 썸네일 3열 레이아웃
+    let x=50; let col=0;
+    for(const a of items){
+      if(y>740){ doc.addPage(); y=70; x=50; col=0; doc.setFontSize(15); doc.text(`Series — ${s} (cont.)`, 50, y); y+=18; }
+      const imgUrl = a.image || `/images/artworks/${a.id}.jpg`;
+      try{
+        const dataURL = await toDataURL(imgUrl);
+        // 썸네일 사이즈 (폭 150, 비율에 맞춰 높이 150로)
+        doc.addImage(dataURL, 'JPEG', x, y, 150, 150, undefined, 'FAST');
+      }catch(e){
+        // 이미지 로드 실패 시 플레이스홀더
+        doc.setDrawColor(80); doc.rect(x,y,150,150);
+        doc.setFontSize(10); doc.text('Image not found', x+24,y+78);
+      }
+      // 캡션
+      doc.setFontSize(11); doc.setTextColor(200,210,220);
+      const cap = `${a.title||'Untitled'} ${a.year?`· ${a.year}`:''}`;
+      const capLines = doc.splitTextToSize(cap, 150);
+      let cy = y+150+14;
+      for(const line of capLines){
+        if(cy>800){ doc.addPage(); cy=70; }
+        doc.text(line, x, cy); cy+=12;
+      }
+
+      // 다음 칸
+      col++; x += 170;
+      if(col===3){ col=0; x=50; y+=200; }
+    }
+    doc.addPage();
+  }
+
+  // 마지막 페이지 — 크레딧
+  doc.setFillColor(10,12,15); doc.rect(0,0,595,842,'F');
+  doc.setTextColor(255,216,107); doc.setFontSize(18);
+  doc.text('DUNGZAK CESTLAVIE', 50, 120);
+  doc.setTextColor(200,210,220); doc.setFontSize(12);
+  doc.text('This portfolio was generated automatically by Report & Portfolio Manager.', 50, 150);
+
+  const fname = `${r.id}_portfolio.pdf`;
+  doc.save(fname);
+}
+
+/** 이미지 to dataURL 유틸 (동일 출처 경로 권장) **/
+function toDataURL(url){
+  return fetch(url, {cache:'no-store'}).then(r=>r.blob())
+    .then(b=>new Promise(res=>{
+      const fr = new FileReader();
+      fr.onload=()=>res(fr.result);
+      fr.readAsDataURL(b);
+    }));
+}
+</script>
+</body>
+</html>
