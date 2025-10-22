@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Trigger GitHub Actions</title>
+<style>
+body { background:#0b1020; color:#eef3ff; font:15px/1.6 Inter,system-ui; padding:32px; }
+button { background:#243470; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; }
+</style>
+</head>
+<body>
+<h1>🪶 DUNGZAK Admin Trigger</h1>
+<p>GitHub Actions 자동 빌드를 수동으로 실행합니다.</p>
+<button onclick="trigger()">Run Content Pipeline</button>
+<script>
+async function trigger(){
+  const token = localStorage.getItem('gh_token');
+  if(!token){ alert('토큰이 없습니다! 관리자에서 먼저 저장하세요.'); return; }
+
+  const res = await fetch('https://api.github.com/repos/dungzakcestlavie/dungzakcestlavie.github.io/actions/workflows/content-pipeline.yml/dispatches', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/vnd.github+json'
+    },
+    body: JSON.stringify({ref:'main'})
+  });
+
+  if(res.ok) alert('✅ Content Pipeline 실행 요청됨!');
+  else alert('❌ 실패: ' + res.status);
+}
+</script>
+</body>
+</html> 해
