@@ -1,0 +1,90 @@
+<!-- ✦ DUNGZAK CESTLAVIE Quick Portal ✦ -->
+<section id="dungzak-links" class="dungzak-links" aria-label="등작 공식 포털">
+  <div class="portal-title">빛의 길로 연결되다 — Path of Light</div>
+  <div class="portal-buttons">
+    <a href="https://naver.me/x95dk3l1" target="_blank" rel="noopener noreferrer" class="portal-btn">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M3.9 12a5 5 0 0 1 5-5h3v2h-3a3 3 0 0 0 0 6h3v2h-3a5 5 0 0 1-5-5Zm6-1h4v2h-4v-2Zm5.2-4h3a5 5 0 1 1 0 10h-3v-2h3a3 3 0 1 0 0-6h-3V7Z"/>
+        </svg>
+      </span>
+      <span>네이버 인물 검색</span>
+    </a>
+
+    <a href="https://www.flickr.com/photos/dungzak" target="_blank" rel="me noopener noreferrer" class="portal-btn">
+      <span class="icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M9 3l2 2h2l2-2h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4Zm3 5a6 6 0 1 0 0 12 6 6 0 0 0 0-12Zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/>
+        </svg>
+      </span>
+      <span>Flickr 작품 아카이브</span>
+    </a>
+  </div>
+</section>
+
+<style>
+/* ✦ DUNGZAK Portal Styling ✦ */
+:root{
+  --blue-dark:#061727;
+  --blue-light:#0e2b4a;
+  --gold:#d2b76e;
+  --mint:#8ad4c9;
+  --text:#e8ecf3;
+}
+.dungzak-links{
+  text-align:center;
+  padding:60px 20px;
+  background: radial-gradient(circle at 50% 120%, rgba(12,31,53,.8), rgba(6,23,39,.95) 70%);
+  border-top:1px solid rgba(255,255,255,.06);
+  position:relative;
+  overflow:hidden;
+}
+.dungzak-links::before{
+  content:"";
+  position:absolute;
+  top:0; left:-50%;
+  width:200%; height:100%;
+  background:linear-gradient(120deg, transparent, rgba(255,255,255,.08), transparent);
+  animation: shimmer 5s linear infinite;
+}
+@keyframes shimmer {
+  from {transform:translateX(-100%);}
+  to {transform:translateX(100%);}
+}
+.portal-title{
+  font-family:'Pretendard','Noto Sans KR',sans-serif;
+  font-size:1.1rem;
+  letter-spacing:0.05em;
+  color:var(--gold);
+  margin-bottom:1.2rem;
+  text-shadow:0 0 6px rgba(210,183,110,.3);
+}
+.portal-buttons{
+  display:flex; justify-content:center; gap:16px; flex-wrap:wrap;
+}
+.portal-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 22px;
+  border-radius:999px;
+  background:linear-gradient(180deg, var(--blue-light), #081a2d);
+  color:var(--text);
+  font-weight:600;
+  border:1px solid rgba(210,183,110,.3);
+  text-decoration:none;
+  box-shadow:0 6px 14px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.05);
+  transition:all .25s ease;
+}
+.portal-btn:hover{
+  transform:translateY(-2px);
+  border-color:var(--gold);
+  box-shadow:0 8px 18px rgba(0,0,0,.45), 0 0 12px rgba(210,183,110,.35);
+  color:var(--gold);
+}
+.icon{ color:var(--mint); transition:color .3s ease; }
+.portal-btn:hover .icon{ color:var(--gold); }
+
+@media(max-width:600px){
+  .portal-title{font-size:1rem;}
+  .portal-btn{padding:10px 18px; font-size:0.9rem;}
+}
+</style>
