@@ -1,0 +1,39 @@
+/* === Cosmic Audio Controls (refined minimalist edition) === */
+#ctrl{
+  position: fixed;
+  right: 14px;
+  bottom: calc(4px + env(safe-area-inset-bottom)); /* 더 낮게 */
+  z-index: 15;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.ctrlbtn{
+  font-size: .68rem;                /* 더 작게 */
+  padding: 5px 8px;                 /* 컴팩트 */
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,.08);
+  color: #dbe3ff;
+  background: rgba(8,12,32,.35);    /* 더 부드럽게 */
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 8px rgba(0,0,0,.2);
+  opacity: .7;                      /* 흐림 강화 */
+  transition: all .25s ease;
+}
+
+.ctrlbtn:hover{
+  opacity: .92;
+  background: rgba(12,18,48,.65);
+  color: #f3c969;                   /* 금빛 강조 */
+}
+
+.ctrlbtn[disabled]{
+  opacity: .38;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px){
+  .ctrlbtn{ font-size: .64rem; padding: 5px 7px; }
+}
