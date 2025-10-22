@@ -1,0 +1,54 @@
+name: Content Pipeline (validate → thumbnails → pre-render)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "data/**"
+      - "reports/**"
+      - "images/**"
+      - "works/**"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate JSON files
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq
+          test -f data/reports.json && jq . data/reports.json > /dev/null
+          echo "✅ JSON validation complete"
+
+      - name: Prepare ImageMagick
+        run: |
+          sudo apt-get install -y imagemagick
+          mkdir -p public/thumbs
+          for img in $(find images -type f -name "*.jpg" -o -name "*.png"); do
+            convert "$img" -resize 800x800 "public/thumbs/$(basename "$img")"
+          done
+          echo "✅ Thumbnails generated"
+
+      - name: Pre-render Reports to HTML
+        run: |
+          mkdir -p reports_html
+          for file in $(find reports -type f -name "*.md" -o -name "*.html"); do
+            cp "$file" reports_html/
+          done
+          echo "✅ Report pre-render complete"
+
+      - name: Commit and Push changes
+        run: |
+          git config user.name "Lumera Bot"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Auto-update: reports + images"
+          git push
