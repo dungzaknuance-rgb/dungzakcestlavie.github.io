@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DUNGZAK · Admin — Artworks Manager Plus (Upload · Edit · Delete · Batch)</title>
+
+<!-- 캐시 무효화 -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<style>
+  :root{--bg:#0b0f1a;--card:#0f1524;--line:#20304a;--ink:#e8eefc;--sub:#9fb4d9;--ok:#8aff9c;--warn:#ffd36e;--err:#ff9aa2;--accent:#b6ff6e;}
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:system-ui,Apple SD Gothic Neo,Segoe UI,Roboto,Arial,sans-serif;line-height:1.45;margin:0}
+  .wrap{max-width:1000px;margin:28px auto;padding:0 16px}
+  h1{font-size:22px;margin:0 0 10px}
+  .pill{display:inline-block;margin-left:8px;padding:4px 10px;border-radius:999px;background:#13213a;color:#b9cef2;font-size:12px}
+  fieldset{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:16px;margin:14px 0}
+  legend{padding:0 6px;color:#b9cef2}
+  label{display:block;font-weight:700;margin:10px 0 6px}
+  input,select,textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:#0e1422;color:var(--ink)}
+  input[type=file]{padding:10px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  button{border:0;border-radius:12px;padding:12px 14px;font-weight:800;cursor:pointer;background:var(--accent);color:#0b0f1a}
+  button.secondary{background:#1f2b44;color:var(--ink);border:1px solid var(--line)}
+  button.warn{background:#f05454;color:#fff}
+  .note{font-size:12px;color:var(--sub);margin-top:6px}
+  .ok{color:var(--ok)} .err{color:var(--err)}
+  .log{white-space:pre-wrap;background:#0a1220;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px;font-size:12px;color:#b9cef2;max-height:240px;overflow:auto}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+  th,td{border-bottom:1px solid #1b2945;padding:9px}
+  tr:hover{background:#0e1a31}
+  .thumb{width:52px;height:52px;object-fit:cover;border-radius:8px;border:1px solid #1b2945}
+  @media (max-width:680px){.row,.row3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>등작 燈酌 DUNGZAK CESTLAVIE — Artworks Manager Plus <span class="pill">Lightflow Ω.3</span></h1>
+
+  <!-- 1) GitHub 연결 -->
+  <fieldset>
+    <legend>1) GitHub 연결</legend>
+    <div class="row">
+      <div>
+        <label>GitHub Owner</label>
+        <input id="ghOwner" placeholder="예: dungzakcestlavie">
+      </div>
+      <div>
+        <label>Repository</label>
+        <input id="ghRepo" placeholder="예: dungzakcestlavie.github.io">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Branch</label>
+        <input id="ghBranch" value="main">
+      </div>
+      <div>
+        <label>Personal Access Token</label>
+        <input id="ghToken" type="password" placeholder="repo 권한 토큰">
+      </div>
+    </div>
+    <div class="btns">
+      <button id="saveCfg">저장(로컬)</button>
+      <button class="secondary" id="testConn">연결 테스트</button>
+      <span id="connMsg" class="note"></span>
+    </div>
+  </fieldset>
+
+  <!-- 2) 작품 업로드 / 수정 / 삭제 -->
+  <fieldset>
+    <legend>2) 작품 업로드 · 수정 · 삭제</legend>
+    <div class="row">
+      <div>
+        <label>Series</label>
+        <select id="series">
+          <option>I Light & Memory</option>
+          <option>II Human Prayer</option>
+          <option>III Rebirth</option>
+          <option>IV Existence</option>
+          <option>V Cosmos</option>
+        </select>
+      </div>
+      <div>
+        <label>Artwork ID <span class="note">영문/숫자/하이픈 권장 (예: Dungzak-1)</span></label>
+        <input id="artworkId" placeholder="Dungzak-1">
+      </div>
+    </div>
+    <div class="row">
+      <div><label>Title</label><input id="title" placeholder="작품 제목"></div>
+      <div><label>Year</label><input id="year" placeholder="2025"></div>
+    </div>
+    <div class="row">
+      <div><label>Medium</label><input id="medium" placeholder="Acrylic on Canvas"></div>
+      <div><label>Size</label><input id="size" placeholder="120x90 cm"></div>
+    </div>
+    <div>
+      <label>Image (.jpg/.png)</label>
+      <input id="imageFile" type="file" accept=".jpg,.jpeg,.png">
+      <div class="note">이미지는 <b>assets/artworks/{ArtworkID}.{확장자}</b>로 저장됩니다.</div>
+    </div>
+    <div class="btns">
+      <button id="btnSave">이미지 업로드 + artworks.json 저장</button>
+      <button class="secondary" id="btnSaveMeta">이미지 없이 메타데이터만 저장</button>
+      <button class="secondary" id="btnReplaceImg">이미지(파일만) 교체</button>
+      <button class="warn" id="btnDelete">이 작품 삭제</button>
+      <button id="btnNext">저장 후 다음 작품(ID 자동 증가)</button>
+    </div>
+    <div id="msg" class="note"></div>
+  </fieldset>
+
+  <!-- 3) 작품 목록 / 검색 / 클릭-편집 -->
+  <fieldset>
+    <legend>3) 목록 · 검색 · 클릭 편집</legend>
+    <div class="btns">
+      <button id="btnReload" class="secondary">목록 새로고침</button>
+      <input id="searchBox" placeholder="ID/제목/시리즈 검색…" style="max-width:320px">
+    </div>
+    <div id="listWrap"></div>
+  </fieldset>
+
+  <!-- 4) 일반 파일 업로드/삭제 (보고서, 기타 리소스) -->
+  <fieldset>
+    <legend>4) 기타 파일 업로드 · 삭제</legend>
+    <div class="row">
+      <div>
+        <label>저장 경로 (예: assets/reports/dcar-03.pdf)</label>
+        <input id="anyPath" placeholder="assets/reports/dcar-03.pdf">
+      </div>
+      <div>
+        <label>파일 선택</label>
+        <input id="anyFile" type="file">
+      </div>
+    </div>
+    <div class="btns">
+      <button id="btnAnyUpload">파일 업로드/갱신</button>
+      <button class="warn" id="btnAnyDelete">이 경로의 파일 삭제</button>
+      <span class="note">폴더는 파일 업로드 시 자동 생성됩니다.</span>
+    </div>
+  </fieldset>
+
+  <div id="log" class="log" aria-live="polite"></div>
+</div>
+
+<script>
+/* ========== 유틸 ========== */
+const $ = s => document.querySelector(s);
+const v = () => Date.now(); // cache buster
+const log = (...a)=>{$('#log').textContent += a.join(' ') + '\n'; $('#log').scrollTop = $('#log').scrollHeight;}
+const cfg = ()=>({
+  owner: localStorage.getItem('ghOwner')||'',
+  repo:  localStorage.getItem('ghRepo')||'',
+  branch:localStorage.getItem('ghBranch')||'main',
+  token: localStorage.getItem('ghToken')||''
+});
+function setMsg(text, cls=''){ const el=$('#msg'); el.textContent=text; el.className='note '+cls; }
+
+/* ========== 설정 로드/저장 ========== */
+function loadCfg(){
+  $('#ghOwner').value  = localStorage.getItem('ghOwner')  || '';
+  $('#ghRepo').value   = localStorage.getItem('ghRepo')   || '';
+  $('#ghBranch').value = localStorage.getItem('ghBranch') || 'main';
+  $('#ghToken').value  = localStorage.getItem('ghToken')  || '';
+}
+function saveCfg(){
+  localStorage.setItem('ghOwner',$('#ghOwner').value.trim());
+  localStorage.setItem('ghRepo',$('#ghRepo').value.trim());
+  localStorage.setItem('ghBranch',$('#ghBranch').value.trim()||'main');
+  localStorage.setItem('ghToken',$('#ghToken').value.trim());
+  $('#connMsg').textContent = '로컬 저장 완료';
+}
+
+/* ========== GitHub API ========== */
+async function gh(path, opt={}){
+  const {owner,repo,branch,token} = cfg();
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const headers = {'Content-Type':'application/json'};
+  if(token) headers.Authorization = `token ${token}`;
+  const res = await fetch(url + (opt.method==='GET'?'': ''), {method: opt.method||'GET', headers, body: opt.body?JSON.stringify(opt.body):undefined});
+  return res;
+}
+async function getSHA(path){
+  const res = await gh(path,{method:'GET'});
+  if(!res.ok) return null;
+  const j = await res.json();
+  return j.sha || null;
+}
+function b64EncodeText(str){
+  return btoa(unescape(encodeURIComponent(str)));
+}
+async function putFile(path, base64, message){
+  const sha = await getSHA(path);
+  const body = {message, content: base64, branch: cfg().branch};
+  if(sha) body.sha = sha;
+  const res = await gh(path,{method:'PUT', body});
+  if(!res.ok){ const t=await res.text(); throw new Error('PUT 실패: '+t); }
+  return res.json();
+}
+async function deleteFile(path, message){
+  const sha = await getSHA(path);
+  if(!sha) throw new Error('삭제할 파일이 없습니다: '+path);
+  const body = {message, sha, branch: cfg().branch};
+  const res = await gh(path,{method:'DELETE', body});
+  if(!res.ok){ const t=await res.text(); throw new Error('DELETE 실패: '+t); }
+  return res.json();
+}
+
+/* ========== artworks.json I/O ========== */
+async function readArtworks(){
+  const {owner,repo,branch} = cfg();
+  const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/artworks.json?v=${v()}`;
+  const res = await fetch(url);
+  if(!res.ok) return [];
+  try { return await res.json(); } catch(e){ return []; }
+}
+async function writeArtworks(list, msg){
+  const text = JSON.stringify(list, null, 2);
+  const base64 = b64EncodeText(text);
+  await putFile('artworks.json', base64, msg||'update artworks.json');
+}
+
+/* ========== 폼 데이터 수집 ========== */
+function getForm(){
+  return {
+    series: $('#series').value.trim(),
+    id:     $('#artworkId').value.trim(),
+    title:  $('#title').value.trim(),
+    year:   $('#year').value.trim(),
+    medium: $('#medium').value.trim(),
+    size:   $('#size').value.trim(),
+  };
+}
+function setForm(a){
+  $('#series').value = a.series||'I Light & Memory';
+  $('#artworkId').value = a.id||'';
+  $('#title').value = a.title||'';
+  $('#year').value = a.year||'';
+  $('#medium').value = a.medium||'';
+  $('#size').value = a.size||'';
+  $('#imageFile').value = '';
+}
+
+/* ========== 이미지 업로드 경로 생성 ========== */
+function imagePathFor(id, file){
+  const ext = (file?.name||'').split('.').pop().toLowerCase();
+  const safe = ext==='png'?'png':'jpg';
+  return `assets/artworks/${id}.${safe}`;
+}
+
+/* ========== 동작들 ========== */
+async function saveWithImage(){
+  try{
+    setMsg('업로드 중…');
+    const file = $('#imageFile').files[0];
+    if(!file) return setMsg('이미지를 선택하세요.', 'err');
+
+    const a = getForm();
+    if(!a.id) return setMsg('Artwork ID를 입력하세요.', 'err');
+
+    const path = imagePathFor(a.id, file);
+    const base64 = await fileToBase64(file);
+
+    // 이미지 업로드
+    await putFile(path, base64, `upload image ${a.id}`);
+
+    // artworks.json 갱신
+    const list = await readArtworks();
+    const idx = list.findIndex(x=>x.id===a.id);
+    const item = {...a, image: path};
+    if(idx>=0) list[idx]=item; else list.push(item);
+    await writeArtworks(list, `update ${a.id}`);
+
+    setMsg('✅ 이미지 + 메타데이터 저장 완료', 'ok');
+    await renderList(); // 목록 갱신
+  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+}
+
+async function saveMetaOnly(){
+  try{
+    setMsg('메타데이터 저장 중…');
+    const a = getForm();
+    if(!a.id) return setMsg('Artwork ID를 입력하세요.', 'err');
+
+    const list = await readArtworks();
+    const idx = list.findIndex(x=>x.id===a.id);
+    let item = idx>=0 ? {...list[idx], ...a} : {...a};
+    list[idx>=0?idx:list.length] = item;
+    await writeArtworks(list, `update meta ${a.id}`);
+
+    setMsg('✅ 메타데이터 저장 완료', 'ok');
+    await renderList();
+  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+}
+
+async function replaceImageOnly(){
+  try{
+    const file = $('#imageFile').files[0];
+    if(!file) return setMsg('교체할 이미지를 선택하세요.', 'err');
+    const a = getForm();
+    if(!a.id) return setMsg('Artwork ID를 입력하세요.', 'err');
+
+    const path = imagePathFor(a.id, file);
+    const base64 = await fileToBase64(file);
+    await putFile(path, base64, `replace image ${a.id}`);
+
+    setMsg('✅ 이미지 교체 완료', 'ok');
+  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+}
+
+async function deleteArtwork(){
+  try{
+    const id = $('#artworkId').value.trim();
+    if(!id) return setMsg('삭제할 Artwork ID를 입력하세요.', 'err');
+
+    // artworks.json에서 제거
+    const list = await readArtworks();
+    const idx = list.findIndex(x=>x.id===id);
+    if(idx<0) return setMsg('해당 ID가 목록에 없습니다.', 'err');
+    const removed = list.splice(idx,1)[0];
+    await writeArtworks(list, `delete ${id}`);
+
+    // 이미지 파일도 있으면 제거 시도
+    if(removed.image){
+      try{ await deleteFile(removed.image, `delete image ${id}`); }
+      catch(e){ log('이미지 삭제 건너뜀:', e.message); }
+    }
+
+    setMsg(`🗑️ ${id} 삭제 완료`, 'ok');
+    setForm({id:''});
+    await renderList();
+  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+}
+
+function nextArtworkId(){
+  const cur = ($('#artworkId').value||'').trim();
+  const m = cur.match(/^(.*?)-(\d+)$/);
+  if(!m) return cur + '-2';
+  const prefix = m[1]; const n = parseInt(m[2]||'0',10)+1;
+  return `${prefix}-${n}`;
+}
+async function saveThenNext(){
+  await saveWithImage();
+  $('#artworkId').value = nextArtworkId();
+  $('#title').value=''; $('#medium').value=''; $('#size').value='';
+  $('#imageFile').value='';
+  setMsg('🎨 다음 작품 준비 완료 (ID 자동 증가)', 'ok');
+}
+
+/* ========== 목록/검색/편집 ========== */
+async function renderList(){
+  const data = await readArtworks();
+  const q = ($('#searchBox').value||'').toLowerCase();
+  const rows = data
+    .filter(a=>!q || JSON.stringify(a).toLowerCase().includes(q))
+    .sort((a,b)=> (a.series||'').localeCompare(b.series||'') || (a.id||'').localeCompare(b.id||''));
+
+  let html = `<table><thead><tr>
+    <th>Thumb</th><th>ID</th><th>Title</th><th>Series</th><th>Year</th><th>Size</th>
+  </tr></thead><tbody>`;
+  for(const a of rows){
+    const thumb = a.image ? `${a.image}?v=${v()}` : '';
+    html += `<tr data-id="${a.id}">
+      <td>${thumb?`<img class="thumb" src="${thumb}" alt="">`:''}</td>
+      <td>${a.id||''}</td>
+      <td>${a.title||''}</td>
+      <td>${a.series||''}</td>
+      <td>${a.year||''}</td>
+      <td>${a.size||''}</td>
+    </tr>`;
+  }
+  html += `</tbody></table>`;
+  $('#listWrap').innerHTML = html;
+
+  // 행 클릭 → 폼 채우기
+  [...document.querySelectorAll('#listWrap tr[data-id]')].forEach(tr=>{
+    tr.addEventListener('click', async ()=>{
+      const id = tr.getAttribute('data-id');
+      const list = await readArtworks();
+      const a = list.find(x=>x.id===id);
+      if(a) setForm(a);
+      window.scrollTo({top:0,behavior:'smooth'});
+      setMsg('✏️ 선택한 작품을 폼에 불러왔습니다.');
+    });
+  });
+}
+
+/* ========== 일반 파일 업로드/삭제 ========== */
+async function anyUpload(){
+  try{
+    const path = $('#anyPath').value.trim();
+    const file = $('#anyFile').files[0];
+    if(!path||!file) return setMsg('경로와 파일을 입력하세요.', 'err');
+    const base64 = await fileToBase64(file);
+    await putFile(path, base64, `upload ${path}`);
+    setMsg(`✅ 업로드 완료: ${path}`, 'ok');
+  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+}
+async function anyDelete(){
+  try{
+    const path = $('#anyPath').value.trim();
+    if(!path) return setMsg('삭제할 경로를 입력하세요.', 'err');
+    await deleteFile(path, `delete ${path}`);
+    setMsg(`🗑️ 삭제 완료: ${path}`, 'ok');
+  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+}
+
+/* ========== 도움 함수 ========== */
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const fr = new FileReader();
+    fr.onload = ()=> resolve(fr.result.split(',')[1]);
+    fr.onerror = reject;
+    fr.readAsDataURL(file);
+  });
+}
+
+/* ========== 연결 테스트 ========== */
+async function testConn(){
+  try{
+    const sha = await getSHA('README.md'); // 존재 여부와 상관없이 요청 테스트
+    $('#connMsg').textContent = '연결 성공 (토큰/권한 OK)';
+  }catch(e){
+    $('#connMsg').textContent = '연결 실패: 토큰/권한/오너/리포 확인';
+  }
+}
+
+/* ========== 이벤트 바인딩 ========== */
+window.addEventListener('DOMContentLoaded', ()=>{
+  loadCfg();
+  $('#saveCfg').addEventListener('click', saveCfg);
+  $('#testConn').addEventListener('click', testConn);
+
+  $('#btnSave').addEventListener('click', saveWithImage);
+  $('#btnSaveMeta').addEventListener('click', saveMetaOnly);
+  $('#btnReplaceImg').addEventListener('click', replaceImageOnly);
+  $('#btnDelete').addEventListener('click', deleteArtwork);
+  $('#btnNext').addEventListener('click', saveThenNext);
+
+  $('#btnReload').addEventListener('click', renderList);
+  $('#searchBox').addEventListener('input', renderList);
+
+  $('#btnAnyUpload').addEventListener('click', anyUpload);
+  $('#btnAnyDelete').addEventListener('click', anyDelete);
+
+  renderList();
+});
+</script>
+</body>
+</html>
