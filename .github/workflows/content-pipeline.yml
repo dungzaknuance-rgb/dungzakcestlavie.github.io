@@ -1,4 +1,4 @@
-name: Content Pipeline (validate → thumbnails → pre-render)
+name: DUNGZAK CESTLAVIE Content Pipeline & Auto Deploy
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
       - "reports/**"
       - "images/**"
       - "works/**"
+      - ".github/workflows/content-pipeline.yml"
 
 permissions:
   contents: write
@@ -16,7 +17,9 @@ permissions:
 
 jobs:
   pipeline:
+    name: Build & Sync Reports
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -25,30 +28,68 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y jq
-          test -f data/reports.json && jq . data/reports.json > /dev/null
-          echo "✅ JSON validation complete"
+          if [ -f "data/reports.json" ]; then
+            jq . data/reports.json > /dev/null
+            echo "✅ reports.json valid"
+          else
+            echo '{ "reports": [] }' > data/reports.json
+            echo "⚙️ reports.json created"
+          fi
 
       - name: Prepare ImageMagick
         run: |
           sudo apt-get install -y imagemagick
           mkdir -p public/thumbs
-          for img in $(find images -type f -name "*.jpg" -o -name "*.png"); do
-            convert "$img" -resize 800x800 "public/thumbs/$(basename "$img")"
+          for img in $(find images -type f \( -name "*.jpg" -o -name "*.png" \)); do
+            convert "$img" -resize 1024x1024 "public/thumbs/$(basename "$img")"
           done
-          echo "✅ Thumbnails generated"
+          echo "🖼️ Thumbnails generated."
 
-      - name: Pre-render Reports to HTML
+      - name: Sync Reports to JSON
         run: |
-          mkdir -p reports_html
-          for file in $(find reports -type f -name "*.md" -o -name "*.html"); do
-            cp "$file" reports_html/
+          mkdir -p data
+          echo '{ "reports": [] }' > data/reports.json
+          for f in $(find reports -type f -name "*.html"); do
+            ID=$(basename "$f" .html)
+            TITLE=$(grep -m1 "<title>" "$f" | sed 's/<[^>]*>//g')
+            echo "  - { id: \"$ID\", title: \"$TITLE\" }" >> data/reports.json
           done
-          echo "✅ Report pre-render complete"
+          echo "📄 reports.json regenerated."
 
-      - name: Commit and Push changes
+      - name: Pre-render Reports HTML
+        run: |
+          mkdir -p build/reports
+          cp -r reports/* build/reports/
+          echo "✨ HTML pre-render complete."
+
+      - name: Commit & Push changes
         run: |
           git config user.name "Lumera Bot"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Auto-update: reports + images"
-          git push
+          git commit -m "Auto-sync reports & thumbnails"
+          git push || echo "No changes to commit."
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: pipeline
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./"
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
