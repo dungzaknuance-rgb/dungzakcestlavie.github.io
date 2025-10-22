@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DUNGZAK · Admin — Artworks Manager (Upload · Edit · Delete · Batch)</title>
+<style>
+  :root{--bg:#0b0f1a;--card:#0f1524;--line:#20304a;--ink:#e8eefc;--sub:#9fb4d9;--ok:#8aff9c;--warn:#ffd36e;--err:#ff9aa2;--accent:#b6ff6e;}
+  body{background:var(--bg);color:var(--ink);font-family:system-ui,Apple SD Gothic Neo,Segoe UI,Roboto,Arial,sans-serif;line-height:1.4}
+  .wrap{max-width:980px;margin:28px auto;padding:0 16px}
+  h1{font-size:22px;margin:0 0 10px}
+  .pill{display:inline-block;margin-left:8px;padding:4px 10px;border-radius:999px;background:#13213a;color:#b9cef2;font-size:12px}
+  fieldset{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:16px;margin:14px 0}
+  legend{padding:0 6px;color:#b9cef2}
+  label{display:block;font-weight:700;margin:10px 0 6px}
+  input,select,textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:#0e1422;color:var(--ink)}
+  input[type=file]{padding:10px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  button{border:0;border-radius:12px;padding:12px 14px;font-weight:800;cursor:pointer;background:var(--accent);color:#0b0f1a}
+  button.secondary{background:#1f2b44;color:var(--ink);border:1px solid var(--line)}
+  button.warn{background:#f05454;color:#fff}
+  .note{font-size:12px;color:var(--sub);margin-top:6px}
+  .ok{color:var(--ok)} .err{color:var(--err)}
+  .log{white-space:pre-wrap;background:#0a1220;border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px;font-size:12px;color:#b9cef2;max-height:220px;overflow:auto}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+  th,td{border-bottom:1px solid #1b2945;padding:8px}
+  tr:hover{background:#0e1a31}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>등작 燈酌 DUNGZAK CESTLAVIE — Artworks Manager <span class="pill">Lightflow Ω.3</span></h1>
+
+  <!-- 1) GitHub 연결 -->
+  <fieldset>
+    <legend>1) GitHub 연결</legend>
+    <div class="row">
+      <div>
+        <label>GitHub Owner</label>
+        <input id="ghOwner" placeholder="예: dungzakcestlavie">
+      </div>
+      <div>
+        <label>Repository</label>
+        <input id="ghRepo" placeholder="예: dungzakcestlavie.github.io">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Branch</label>
+        <input id="ghBranch" value="main">
+      </div>
+      <div>
+        <label>Personal Access Token</label>
+        <input id="ghToken" type="password" placeholder="토큰 (repo 권한)">
+      </div>
+    </div>
+    <div class="btns">
+      <button id="saveCfg">저장(로컬)</button>
+      <button class="secondary" id="testConn">연결 테스트</button>
+      <span id="connMsg" class="note"></span>
+    </div>
+  </fieldset>
+
+  <!-- 2) 작품 업로드 / 수정 -->
+  <fieldset>
+    <legend>2) 작품 업로드 · 수정</legend>
+    <div class="row">
+      <div>
+        <label>Series</label>
+        <select id="series">
+          <option>I Light & Memory</option>
+          <option>II Human Prayer</option>
+          <option>III Rebirth</option>
+          <option>IV Existence</option>
+          <option>V Cosmos</option>
+        </select>
+      </div>
+      <div>
+        <label>Artwork ID <span class="note">영문-숫자 권장 (예: Dungzak-1)</span></label>
+        <input id="artworkId" placeholder="Dungzak-1">
+      </div>
+    </div>
+
+    <div class="row">
+      <div><label>Title</label><input id="title" placeholder="작품 제목"></div>
+      <div><label>Year</label><input id="year" placeholder="2025"></div>
+    </div>
+
+    <div class="row">
+      <div><label>Medium</label><input id="medium" placeholder="Acrylic on Canvas"></div>
+      <div><label>Size</label><input id="size" placeholder="120x90 cm"></div>
+    </div>
+
+    <div>
+      <label>Image (.jpg/.png)</label>
+      <input id="imageFile" type="file" accept=".jpg,.jpeg,.png">
+      <div class="note">파일명은 자동으로 <b>assets/artworks/{ArtworkID}.확장자</b> 로 저장됩니다.</div>
+    </div>
+
+    <div class="btns">
+      <button id="btnSave">이미지 업로드 + artworks.json 저장</button>
+      <button class="secondary" id="btnSaveMeta">이미지 없이 메타데이터만 저장</button>
+      <button class="secondary" id="btnReplaceImg">이미지(파일만) 교체</button>
+      <button class="warn" id="btnDelete">이 작품 삭제</button>
+      <button id="btnNext">저장 후 다음 작품(ID 자동 증가)</button>
+    </div>
+    <div id="msg" class="note"></div>
+  </fieldset>
+
+  <!-- 3) 작품 목록 / 선택 편집 -->
+  <fieldset>
+    <legend>3) 목록 · 선택 편집</legend>
+    <div class="btns">
+      <button id="btnReload" class="secondary">목록 새로고침</button>
+      <input id="searchBox" placeholder="ID/제목/시리즈 검색…" style="max-width:320px">
+    </div>
+    <div id="listWrap"></div>
+  </fieldset>
+
+  <!-- 4) 일반 파일 업로드 / 삭제 (보고서, 기타 리소스) -->
+  <fieldset>
+    <legend>4) 기타 파일 업로드 · 삭제</legend>
+    <div class="row">
+      <div>
+        <label>저장 경로 (예: assets/reports/dcar-03.pdf)</label>
+        <input id="anyPath" placeholder="assets/reports/dcar-03.pdf">
+      </div>
+      <div>
+        <label>파일 선택</label>
+        <input id="anyFile" type="file">
+      </div>
+    </div>
+    <div class="btns">
+      <button id="btnAnyUpload">파일 업로드/갱신</button>
+      <button class="warn" id="btnAnyDelete">이 경로의 파일 삭제</button>
+      <span class="note">폴더는 파일 업로드 시 자동 생성됩니다.</span>
+    </div>
+  </fieldset>
+
+  <div id="log" class="log" aria-live="polite"></div>
+</div>
+
+<script>
+/* ========== 설정 로드/저장 ========== */
+const $ = s => document.querySelector(s);
+const log = (...a)=>{$('#log').textContent += a.join(' ') + '\n'; $('#log').scrollTop = $('#log').scrollHeight;}
+function loadCfg(){
+  $('#ghOwner').value  = localStorage.getItem('ghOwner')  || '';
+  $('#ghRepo').value   = localStorage.getItem('ghRepo')   || '';
+  $('#ghBranch').value = localStorage.getItem
