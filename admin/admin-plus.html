@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DUNGZAK · Admin — Artworks Manager Plus (Upload · Edit · Delete · Batch)</title>
+<title>DUNGZAK · Admin — Artworks Manager Plus (Upload · Edit · Delete · Instant Refresh)</title>
 
-<!-- 캐시 무효화 -->
+<!-- 강력 캐시 무효화 -->
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -148,57 +148,34 @@
 </div>
 
 <script>
-/* ========== 유틸 ========== */
+/* ===== 공통 유틸 ===== */
 const $ = s => document.querySelector(s);
-const v = () => Date.now(); // cache buster
+const nowV = () => String(Date.now()); // 캐시버스터/신호
 const log = (...a)=>{$('#log').textContent += a.join(' ') + '\n'; $('#log').scrollTop = $('#log').scrollHeight;}
-const cfg = ()=>({
-  owner: localStorage.getItem('ghOwner')||'',
-  repo:  localStorage.getItem('ghRepo')||'',
-  branch:localStorage.getItem('ghBranch')||'main',
-  token: localStorage.getItem('ghToken')||''
-});
+const cfg = ()=>({owner:localStorage.getItem('ghOwner')||'',repo:localStorage.getItem('ghRepo')||'',branch:localStorage.getItem('ghBranch')||'main',token:localStorage.getItem('ghToken')||''});
 function setMsg(text, cls=''){ const el=$('#msg'); el.textContent=text; el.className='note '+cls; }
+function signalRefresh(){ localStorage.setItem('lastArtworksUpdate', nowV()); } // ⚡ Works 즉시 새로고침 신호
 
-/* ========== 설정 로드/저장 ========== */
-function loadCfg(){
-  $('#ghOwner').value  = localStorage.getItem('ghOwner')  || '';
-  $('#ghRepo').value   = localStorage.getItem('ghRepo')   || '';
-  $('#ghBranch').value = localStorage.getItem('ghBranch') || 'main';
-  $('#ghToken').value  = localStorage.getItem('ghToken')  || '';
-}
-function saveCfg(){
-  localStorage.setItem('ghOwner',$('#ghOwner').value.trim());
-  localStorage.setItem('ghRepo',$('#ghRepo').value.trim());
-  localStorage.setItem('ghBranch',$('#ghBranch').value.trim()||'main');
-  localStorage.setItem('ghToken',$('#ghToken').value.trim());
-  $('#connMsg').textContent = '로컬 저장 완료';
-}
+/* ===== 설정 로드/저장 ===== */
+function loadCfg(){ $('#ghOwner').value=localStorage.getItem('ghOwner')||''; $('#ghRepo').value=localStorage.getItem('ghRepo')||''; $('#ghBranch').value=localStorage.getItem('ghBranch')||'main'; $('#ghToken').value=localStorage.getItem('ghToken')||''; }
+function saveCfg(){ localStorage.setItem('ghOwner',$('#ghOwner').value.trim()); localStorage.setItem('ghRepo',$('#ghRepo').value.trim()); localStorage.setItem('ghBranch',$('#ghBranch').value.trim()||'main'); localStorage.setItem('ghToken',$('#ghToken').value.trim()); $('#connMsg').textContent='로컬 저장 완료'; }
 
-/* ========== GitHub API ========== */
+/* ===== GitHub API ===== */
 async function gh(path, opt={}){
-  const {owner,repo,branch,token} = cfg();
+  const {owner,repo,token} = cfg();
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   const headers = {'Content-Type':'application/json'};
   if(token) headers.Authorization = `token ${token}`;
-  const res = await fetch(url + (opt.method==='GET'?'': ''), {method: opt.method||'GET', headers, body: opt.body?JSON.stringify(opt.body):undefined});
-  return res;
+  return fetch(url, {method: opt.method||'GET', headers, body: opt.body?JSON.stringify(opt.body):undefined});
 }
-async function getSHA(path){
-  const res = await gh(path,{method:'GET'});
-  if(!res.ok) return null;
-  const j = await res.json();
-  return j.sha || null;
-}
-function b64EncodeText(str){
-  return btoa(unescape(encodeURIComponent(str)));
-}
+async function getSHA(path){ const res=await gh(path,{method:'GET'}); if(!res.ok) return null; const j=await res.json(); return j.sha||null; }
+function b64Text(str){ return btoa(unescape(encodeURIComponent(str))); }
 async function putFile(path, base64, message){
   const sha = await getSHA(path);
   const body = {message, content: base64, branch: cfg().branch};
   if(sha) body.sha = sha;
   const res = await gh(path,{method:'PUT', body});
-  if(!res.ok){ const t=await res.text(); throw new Error('PUT 실패: '+t); }
+  if(!res.ok){ throw new Error('PUT 실패: '+await res.text()); }
   return res.json();
 }
 async function deleteFile(path, message){
@@ -206,152 +183,113 @@ async function deleteFile(path, message){
   if(!sha) throw new Error('삭제할 파일이 없습니다: '+path);
   const body = {message, sha, branch: cfg().branch};
   const res = await gh(path,{method:'DELETE', body});
-  if(!res.ok){ const t=await res.text(); throw new Error('DELETE 실패: '+t); }
+  if(!res.ok){ throw new Error('DELETE 실패: '+await res.text()); }
   return res.json();
 }
 
-/* ========== artworks.json I/O ========== */
+/* ===== artworks.json I/O ===== */
 async function readArtworks(){
   const {owner,repo,branch} = cfg();
-  const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/artworks.json?v=${v()}`;
-  const res = await fetch(url);
+  const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/artworks.json?v=${nowV()}`;
+  const res = await fetch(url, {cache:'no-store'});
   if(!res.ok) return [];
-  try { return await res.json(); } catch(e){ return []; }
+  try { return await res.json(); } catch { return []; }
 }
 async function writeArtworks(list, msg){
   const text = JSON.stringify(list, null, 2);
-  const base64 = b64EncodeText(text);
+  const base64 = b64Text(text);
   await putFile('artworks.json', base64, msg||'update artworks.json');
 }
 
-/* ========== 폼 데이터 수집 ========== */
-function getForm(){
-  return {
-    series: $('#series').value.trim(),
-    id:     $('#artworkId').value.trim(),
-    title:  $('#title').value.trim(),
-    year:   $('#year').value.trim(),
-    medium: $('#medium').value.trim(),
-    size:   $('#size').value.trim(),
-  };
-}
-function setForm(a){
-  $('#series').value = a.series||'I Light & Memory';
-  $('#artworkId').value = a.id||'';
-  $('#title').value = a.title||'';
-  $('#year').value = a.year||'';
-  $('#medium').value = a.medium||'';
-  $('#size').value = a.size||'';
-  $('#imageFile').value = '';
-}
+/* ===== 폼 I/O ===== */
+function getForm(){ return {series:$('#series').value.trim(), id:$('#artworkId').value.trim(), title:$('#title').value.trim(), year:$('#year').value.trim(), medium:$('#medium').value.trim(), size:$('#size').value.trim()}; }
+function setForm(a){ $('#series').value=a.series||'I Light & Memory'; $('#artworkId').value=a.id||''; $('#title').value=a.title||''; $('#year').value=a.year||''; $('#medium').value=a.medium||''; $('#size').value=a.size||''; $('#imageFile').value=''; }
+function imagePathFor(id, file){ const ext=(file?.name||'').split('.').pop().toLowerCase(); const safe = (ext==='png')?'png':'jpg'; return `assets/artworks/${id}.${safe}`; }
+function nextId(){ const cur=($('#artworkId').value||'').trim(); const m=cur.match(/^(.*?)-(\d+)$/); if(!m) return cur?`${cur}-2`:'Dungzak-1'; return `${m[1]}-${parseInt(m[2],10)+1}`; }
+function fileToBase64(file){ return new Promise((resolve,reject)=>{ const fr=new FileReader(); fr.onload=()=>resolve(fr.result.split(',')[1]); fr.onerror=reject; fr.readAsDataURL(file); }); }
 
-/* ========== 이미지 업로드 경로 생성 ========== */
-function imagePathFor(id, file){
-  const ext = (file?.name||'').split('.').pop().toLowerCase();
-  const safe = ext==='png'?'png':'jpg';
-  return `assets/artworks/${id}.${safe}`;
-}
-
-/* ========== 동작들 ========== */
+/* ===== 동작: 저장/수정/삭제 ===== */
 async function saveWithImage(){
   try{
     setMsg('업로드 중…');
-    const file = $('#imageFile').files[0];
-    if(!file) return setMsg('이미지를 선택하세요.', 'err');
-
-    const a = getForm();
-    if(!a.id) return setMsg('Artwork ID를 입력하세요.', 'err');
+    const file = $('#imageFile').files[0]; if(!file) return setMsg('이미지를 선택하세요.','err');
+    const a = getForm(); if(!a.id) return setMsg('Artwork ID를 입력하세요.','err');
 
     const path = imagePathFor(a.id, file);
     const base64 = await fileToBase64(file);
-
-    // 이미지 업로드
     await putFile(path, base64, `upload image ${a.id}`);
 
-    // artworks.json 갱신
     const list = await readArtworks();
     const idx = list.findIndex(x=>x.id===a.id);
     const item = {...a, image: path};
     if(idx>=0) list[idx]=item; else list.push(item);
     await writeArtworks(list, `update ${a.id}`);
 
-    setMsg('✅ 이미지 + 메타데이터 저장 완료', 'ok');
-    await renderList(); // 목록 갱신
-  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+    signalRefresh(); // ⚡ 즉시 반영 신호
+    setMsg('✅ 이미지 + 메타데이터 저장 완료','ok');
+    await renderList();
+  }catch(e){ setMsg('오류: '+e.message,'err'); log(e.message); }
 }
 
 async function saveMetaOnly(){
   try{
     setMsg('메타데이터 저장 중…');
-    const a = getForm();
-    if(!a.id) return setMsg('Artwork ID를 입력하세요.', 'err');
+    const a=getForm(); if(!a.id) return setMsg('Artwork ID를 입력하세요.','err');
 
     const list = await readArtworks();
     const idx = list.findIndex(x=>x.id===a.id);
-    let item = idx>=0 ? {...list[idx], ...a} : {...a};
+    const item = idx>=0 ? {...list[idx], ...a} : {...a};
     list[idx>=0?idx:list.length] = item;
     await writeArtworks(list, `update meta ${a.id}`);
 
-    setMsg('✅ 메타데이터 저장 완료', 'ok');
+    signalRefresh();
+    setMsg('✅ 메타데이터 저장 완료','ok');
     await renderList();
-  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+  }catch(e){ setMsg('오류: '+e.message,'err'); log(e.message); }
 }
 
 async function replaceImageOnly(){
   try{
-    const file = $('#imageFile').files[0];
-    if(!file) return setMsg('교체할 이미지를 선택하세요.', 'err');
-    const a = getForm();
-    if(!a.id) return setMsg('Artwork ID를 입력하세요.', 'err');
+    const file=$('#imageFile').files[0]; if(!file) return setMsg('교체할 이미지를 선택하세요.','err');
+    const a=getForm(); if(!a.id) return setMsg('Artwork ID를 입력하세요.','err');
 
-    const path = imagePathFor(a.id, file);
-    const base64 = await fileToBase64(file);
+    const path=imagePathFor(a.id,file);
+    const base64=await fileToBase64(file);
     await putFile(path, base64, `replace image ${a.id}`);
 
-    setMsg('✅ 이미지 교체 완료', 'ok');
-  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+    signalRefresh();
+    setMsg('✅ 이미지 교체 완료','ok');
+  }catch(e){ setMsg('오류: '+e.message,'err'); log(e.message); }
 }
 
 async function deleteArtwork(){
   try{
-    const id = $('#artworkId').value.trim();
-    if(!id) return setMsg('삭제할 Artwork ID를 입력하세요.', 'err');
+    const id=$('#artworkId').value.trim(); if(!id) return setMsg('삭제할 Artwork ID를 입력하세요.','err');
 
-    // artworks.json에서 제거
-    const list = await readArtworks();
-    const idx = list.findIndex(x=>x.id===id);
-    if(idx<0) return setMsg('해당 ID가 목록에 없습니다.', 'err');
-    const removed = list.splice(idx,1)[0];
+    const list=await readArtworks();
+    const idx=list.findIndex(x=>x.id===id);
+    if(idx<0) return setMsg('해당 ID가 목록에 없습니다.','err');
+    const removed=list.splice(idx,1)[0];
     await writeArtworks(list, `delete ${id}`);
 
-    // 이미지 파일도 있으면 제거 시도
-    if(removed.image){
-      try{ await deleteFile(removed.image, `delete image ${id}`); }
-      catch(e){ log('이미지 삭제 건너뜀:', e.message); }
-    }
+    if(removed.image){ try{ await deleteFile(removed.image, `delete image ${id}`); }catch(e){ log('이미지 삭제 건너뜀:', e.message); } }
 
-    setMsg(`🗑️ ${id} 삭제 완료`, 'ok');
+    signalRefresh();
+    setMsg(`🗑️ ${id} 삭제 완료`,'ok');
     setForm({id:''});
     await renderList();
-  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+  }catch(e){ setMsg('오류: '+e.message,'err'); log(e.message); }
 }
 
-function nextArtworkId(){
-  const cur = ($('#artworkId').value||'').trim();
-  const m = cur.match(/^(.*?)-(\d+)$/);
-  if(!m) return cur + '-2';
-  const prefix = m[1]; const n = parseInt(m[2]||'0',10)+1;
-  return `${prefix}-${n}`;
-}
 async function saveThenNext(){
   await saveWithImage();
-  $('#artworkId').value = nextArtworkId();
+  $('#artworkId').value = nextId();
   $('#title').value=''; $('#medium').value=''; $('#size').value='';
   $('#imageFile').value='';
-  setMsg('🎨 다음 작품 준비 완료 (ID 자동 증가)', 'ok');
+  setMsg('🎨 다음 작품 준비 완료 (ID 자동 증가)','ok');
 }
 
-/* ========== 목록/검색/편집 ========== */
+/* ===== 목록/검색/편집 ===== */
 async function renderList(){
   const data = await readArtworks();
   const q = ($('#searchBox').value||'').toLowerCase();
@@ -359,11 +297,9 @@ async function renderList(){
     .filter(a=>!q || JSON.stringify(a).toLowerCase().includes(q))
     .sort((a,b)=> (a.series||'').localeCompare(b.series||'') || (a.id||'').localeCompare(b.id||''));
 
-  let html = `<table><thead><tr>
-    <th>Thumb</th><th>ID</th><th>Title</th><th>Series</th><th>Year</th><th>Size</th>
-  </tr></thead><tbody>`;
+  let html = `<table><thead><tr><th>Thumb</th><th>ID</th><th>Title</th><th>Series</th><th>Year</th><th>Size</th></tr></thead><tbody>`;
   for(const a of rows){
-    const thumb = a.image ? `${a.image}?v=${v()}` : '';
+    const thumb = a.image ? `${a.image}?v=${nowV()}` : '';
     html += `<tr data-id="${a.id}">
       <td>${thumb?`<img class="thumb" src="${thumb}" alt="">`:''}</td>
       <td>${a.id||''}</td>
@@ -376,7 +312,6 @@ async function renderList(){
   html += `</tbody></table>`;
   $('#listWrap').innerHTML = html;
 
-  // 행 클릭 → 폼 채우기
   [...document.querySelectorAll('#listWrap tr[data-id]')].forEach(tr=>{
     tr.addEventListener('click', async ()=>{
       const id = tr.getAttribute('data-id');
@@ -389,47 +324,35 @@ async function renderList(){
   });
 }
 
-/* ========== 일반 파일 업로드/삭제 ========== */
+/* ===== 일반 파일 업/삭제 ===== */
 async function anyUpload(){
   try{
-    const path = $('#anyPath').value.trim();
-    const file = $('#anyFile').files[0];
-    if(!path||!file) return setMsg('경로와 파일을 입력하세요.', 'err');
-    const base64 = await fileToBase64(file);
+    const path=$('#anyPath').value.trim(); const file=$('#anyFile').files[0];
+    if(!path||!file) return setMsg('경로와 파일을 입력하세요.','err');
+    const base64=await fileToBase64(file);
     await putFile(path, base64, `upload ${path}`);
-    setMsg(`✅ 업로드 완료: ${path}`, 'ok');
-  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+    signalRefresh();
+    setMsg(`✅ 업로드 완료: ${path}`,'ok');
+  }catch(e){ setMsg('오류: '+e.message,'err'); log(e.message); }
 }
 async function anyDelete(){
   try{
-    const path = $('#anyPath').value.trim();
-    if(!path) return setMsg('삭제할 경로를 입력하세요.', 'err');
+    const path=$('#anyPath').value.trim(); if(!path) return setMsg('삭제할 경로를 입력하세요.','err');
     await deleteFile(path, `delete ${path}`);
-    setMsg(`🗑️ 삭제 완료: ${path}`, 'ok');
-  }catch(e){ setMsg('오류: '+e.message, 'err'); log(e.message); }
+    signalRefresh();
+    setMsg(`🗑️ 삭제 완료: ${path}`,'ok');
+  }catch(e){ setMsg('오류: '+e.message,'err'); log(e.message); }
 }
 
-/* ========== 도움 함수 ========== */
-function fileToBase64(file){
-  return new Promise((resolve,reject)=>{
-    const fr = new FileReader();
-    fr.onload = ()=> resolve(fr.result.split(',')[1]);
-    fr.onerror = reject;
-    fr.readAsDataURL(file);
-  });
-}
-
-/* ========== 연결 테스트 ========== */
+/* ===== 연결 테스트 ===== */
 async function testConn(){
   try{
-    const sha = await getSHA('README.md'); // 존재 여부와 상관없이 요청 테스트
+    const sha = await getSHA('README.md'); // 존재 여부 무관 테스트
     $('#connMsg').textContent = '연결 성공 (토큰/권한 OK)';
-  }catch(e){
-    $('#connMsg').textContent = '연결 실패: 토큰/권한/오너/리포 확인';
-  }
+  }catch{ $('#connMsg').textContent = '연결 실패: 토큰/권한/오너/리포 확인'; }
 }
 
-/* ========== 이벤트 바인딩 ========== */
+/* ===== 바인딩 ===== */
 window.addEventListener('DOMContentLoaded', ()=>{
   loadCfg();
   $('#saveCfg').addEventListener('click', saveCfg);
