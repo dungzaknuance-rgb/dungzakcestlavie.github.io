@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>등작 燈酌 DUNGZAK CESTLAVIE — Artworks Manager (Lightflow Ω.3)</title>
+<style>
+  :root{
+    --bg:#0b1220; --card:#111a2b; --ink:#cfe3ff; --muted:#8aa6d1;
+    --accent:#7aa6ff; --ok:#38d996; --bad:#ff6b6b; --warn:#ffd166;
+  }
+  *{box-sizing:border-box;font-family:ui-sans-serif,system-ui,Apple SD Gothic Neo,Segoe UI,Arial}
+  body{margin:0;background:var(--bg);color:var(--ink)}
+  .wrap{max-width:920px;margin:24px auto;padding:16px}
+  h1{font-size:22px;margin:0 0 12px;font-weight:700}
+  .chip{display:inline-block;background:#14203a;color:#bcd7ff;border:1px solid #29406e;
+        border-radius:999px;padding:4px 10px;font-size:12px;vertical-align:middle;margin-left:6px}
+  .card{background:var(--card);border:1px solid #1b2741;border-radius:14px;padding:16px;margin:14px 0}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:720px){.row{grid-template-columns:1fr}}
+  label{display:block;font-size:13px;color:var(--muted);margin:10px 0 6px}
+  input,select,textarea{width:100%;background:#0e1628;border:1px solid #233456;border-radius:10px;
+        color:var(--ink);padding:12px;font-size:15px;outline:none}
+  input::placeholder{color:#6c86af}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:#d5ff7a;color:#0b1220;
+       border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer}
+  .btn.secondary{background:#1b2741;color:#d4e6ff;border:1px solid #2a3e66}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .status{margin-left:10px;font-size:13px}
+  .status.ok{color:var(--ok)} .status.bad{color:var(--bad)} .status.warn{color:var(--warn)}
+  .hr{height:1px;background:#1b2741;margin:14px 0}
+  .log{white-space:pre-wrap;background:#0b1426;border:1px dashed #223559;border-radius:12px;
+       color:#cfe3ff;padding:12px;font-size:12px;max-height:260px;overflow:auto}
+  .hint{font-size:12px;color:#9db8e6}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid #2a3f6a;
+        background:#0f1a31;color:#b8d0ff;font-size:12px;margin-left:8px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>등작 燈酌 DUNGZAK CESTLAVIE — Artworks Manager <span class="chip">Lightflow Ω.3</span></h1>
+
+    <!-- 1) GitHub 연결 -->
+    <div class="card">
+      <h2 style="margin:0 0 6px">1) GitHub 연결</h2>
+      <div class="row">
+        <div>
+          <label>GitHub Owner</label>
+          <input id="ghOwner" placeholder="예: dungzakcestlavie" autocomplete="username"/>
+        </div>
+        <div>
+          <label>Repository</label>
+          <input id="ghRepo" placeholder="예: dungzakcestlavie.github.io" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Branch</label>
+          <input id="ghBranch" value="main" />
+        </div>
+        <div>
+          <label>Personal Access Token</label>
+          <input id="ghToken" type="password" inputmode="text" autocomplete="new-password" placeholder="repo 권한 포함 토큰" />
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:10px">
+        <button id="btnSaveLocal" class="btn">저장(로컬)</button>
+        <button id="btnTest" class="btn secondary">연결 테스트</button>
+        <span id="connStatus" class="status"></span>
+      </div>
+      <div class="hint" style="margin-top:8px">토큰 권한: <b>repo</b> (GitHub.com → Settings → Developer settings → Fine-grained PAT 권장)</div>
+    </div>
+
+    <!-- 2) 업로드 -->
+    <div class="card">
+      <h2 style="margin:0 0 6px">2) 작품 업로드 · 수정</h2>
+      <div class="row">
+        <div>
+          <label>Series</label>
+          <select id="series">
+            <option>Light & Memory</option>
+            <option>Human Prayer</option>
+            <option>Rebirth</option>
+            <option>Existence</option>
+            <option>Cosmos</option>
+          </select>
+        </div>
+        <div>
+          <label>Artwork ID <span class="pill">영문·숫자 권장 (예: Dungzak-1)</span></label>
+          <input id="artId" placeholder="Dungzak-1" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Title</label>
+          <input id="title" placeholder="작품 제목" />
+        </div>
+        <div>
+          <label>Year</label>
+          <input id="year" type="number" value="2025" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Medium</label>
+          <input id="medium" value="Acrylic on Canvas" />
+        </div>
+        <div>
+          <label>Size</label>
+          <input id="size" value="120x90 cm" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Image (.jpg/.png)</label>
+          <input id="image" type="file" accept=".jpg,.jpeg,.png" />
+        </div>
+        <div>
+          <label>설명(선택)</label>
+          <input id="desc" placeholder="간단 설명 (선택)" />
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
+        <button id="btnUpload" class="btn">업로드</button>
+        <span id="upStatus" class="status"></span>
+      </div>
+      <div class="hr"></div>
+      <div class="hint">업로드 경로:
+        <code>assets/artworks/&lt;SeriesSlug&gt;/&lt;ArtworkID&gt;.&lt;ext&gt;</code>,
+        <code>data/artworks/&lt;ArtworkID&gt;.json</code>
+      </div>
+    </div>
+
+    <!-- 로그 -->
+    <div class="card">
+      <h2 style="margin:0 0 6px">진행 로그</h2>
+      <div id="log" class="log">준비됨.</div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  // ---------- Utilities ----------
+  const $ = (id)=>document.getElementById(id);
+  const logEl = $('log');
+  const log = (msg)=>{ logEl.textContent += `\n${new Date().toLocaleTimeString()} · ${msg}`; logEl.scrollTop = logEl.scrollHeight; };
+  const status = (el, text, cls)=>{ el.textContent = text||''; el.className = 'status ' + (cls||''); };
+
+  const LS_KEY = 'lightflow_admin_settings_v3';
+  function saveLocal(){
+    const payload = {
+      owner: $('ghOwner').value.trim(),
+      repo: $('ghRepo').value.trim(),
+      branch: $('ghBranch').value.trim() || 'main',
+      // 토큰은 로컬에도 저장(사용자가 원해 저장 버튼을 누른 경우만)
+      token: $('ghToken').value.trim(),
+      savedAt: Date.now()
+    };
+    localStorage.setItem(LS_KEY, JSON.stringify(payload));
+    log('로컬 저장 완료.');
+  }
+  function loadLocal(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return;
+      const s = JSON.parse(raw);
+      $('ghOwner').value = s.owner||'';
+      $('ghRepo').value  = s.repo||'';
+      $('ghBranch').value= s.branch||'main';
+      $('ghToken').value = s.token||'';
+      log('로컬 설정 불러옴.');
+    }catch(e){ log('설정 로드 실패: '+e.message); }
+  }
+  function slugifySeries(name){
+    return name.replace(/&/g,'and').replace(/[^\w]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+  }
+  async function fileToBase64(file){
+    const buf = await file.arrayBuffer();
+    // Github API는 표준 base64 필요
+    let binary = '';
+    const bytes = new Uint8Array(buf);
+    const chunk = 0x8000;
+    for (let i=0; i<bytes.length; i+=chunk){
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i+chunk));
+    }
+    return btoa(binary);
+  }
+  function getHeaders(token){
+    return {
+      'Accept':'application/vnd.github+json',
+      'Authorization': 'Bearer ' + token,
+      'X-GitHub-Api-Version':'2022-11-28'
+    };
+  }
+  async function githubGet(url, token){
+    const res = await fetch(url, {headers:getHeaders(token)});
+    if(!res.ok){
+      const t = await res.text();
+      throw new Error(`${res.status} ${res.statusText} :: ${t}`);
+    }
+    return res.json();
+  }
+  async function githubPutContent(owner, repo, path, contentB64, message, token, branch, sha){
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+    const body = { message, content: contentB64, branch };
+    if(sha) body.sha = sha;
+    const res = await fetch(url, { method:'PUT', headers:getHeaders(token), body: JSON.stringify(body) });
+    if(!res.ok){
+      const t = await res.text();
+      throw new Error(`PUT ${path} :: ${res.status} ${res.statusText} :: ${t}`);
+    }
+    return res.json();
+  }
+  async function githubGetShaIfExists(owner, repo, path, token, branch){
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
+    const res = await fetch(url, {headers:getHeaders(token)});
+    if(res.status===404) return null;
+    if(!res.ok){
+      const t = await res.text();
+      throw new Error(`HEAD ${path} :: ${res.status} ${res.statusText} :: ${t}`);
+    }
+    const j = await res.json();
+    return j.sha || null;
+  }
+
+  // ---------- Buttons ----------
+  $('btnSaveLocal').addEventListener('click', (e)=>{ e.preventDefault(); saveLocal(); status($('connStatus'),'로컬 저장됨', 'ok'); });
+
+  $('btnTest').addEventListener('click', async (e)=>{
+    e.preventDefault(); // iOS 사파리 폼 자동 제출 방지
+    const owner = $('ghOwner').value.trim();
+    const repo  = $('ghRepo').value.trim();
+    const branch= $('ghBranch').value.trim() || 'main';
+    const token = $('ghToken').value.trim();
+
+    if(!owner || !repo || !branch || !token){
+      status($('connStatus'),'필수 항목 누락', 'warn'); log('연결 테스트 실패: 필수 항목 누락');
+      return;
+    }
+
+    $('btnTest').disabled = true; status($('connStatus'),'연결 확인 중…','warn'); log('GitHub 연결 확인 시작');
+
+    try{
+      // 1) repo 존재
+      await githubGet(`https://api.github.com/repos/${owner}/${repo}`, token);
+      log('리포지토리 확인 OK');
+
+      // 2) branch 존재
+      await githubGet(`https://api.github.com/repos/${owner}/${repo}/branches/${encodeURIComponent(branch)}`, token);
+      log('브랜치 확인 OK');
+
+      status($('connStatus'),'✅ Connected Successfully', 'ok');
+      log('연결 테스트 완료');
+    }catch(err){
+      status($('connStatus'),'❌ 연결 실패', 'bad');
+      log('오류: ' + err.message +
+          '\n- Owner/Repo 철자 확인 (예: dungzakcestlavie / dungzakcestlavie.github.io)' +
+          '\n- 토큰 권한(repo) 및 만료 여부 확인');
+    }finally{
+      $('btnTest').disabled = false;
+    }
+  });
+
+  $('btnUpload').addEventListener('click', async (e)=>{
+    e.preventDefault();
+
+    const owner = $('ghOwner').value.trim();
+    const repo  = $('ghRepo').value.trim();
+    const branch= $('ghBranch').value.trim() || 'main';
+    const token = $('ghToken').value.trim();
+
+    const series= $('series').value.trim();
+    const artId = $('artId').value.trim();
+    const title = $('title').value.trim();
+    const year  = $('year').value.trim();
+    const medium= $('medium').value.trim();
+    const size  = $('size').value.trim();
+    const desc  = $('desc').value.trim();
+    const file  = $('image').files[0];
+
+    if(!owner||!repo||!token||!artId||!series||!title||!year||!file){
+      status($('upStatus'),'입력값 확인 필요', 'warn');
+      log('업로드 중단: 필수값 누락(Owner/Repo/Token/Series/ArtworkID/Title/Year/Image)');
+      return;
+    }
+
+    $('btnUpload').disabled = true; status($('upStatus'),'업로드 중…','warn'); log('이미지/메타 업로드 시작');
+
+    try{
+      // 이미지 업로드
+      const ext = (file.name.split('.').pop()||'jpg').toLowerCase();
+      const seriesSlug = slugifySeries(series);
+      const imgPath = `assets/artworks/${seriesSlug}/${artId}.${ext}`;
+      const imgB64 = await fileToBase64(file);
+      const imgSha = await githubGetShaIfExists(owner, repo, imgPath, token, branch);
+      await githubPutContent(owner, repo, imgPath, imgB64, `feat: upload image ${artId}`, token, branch, imgSha);
+      log(`이미지 업로드 완료 → ${imgPath} ${imgSha?'(update)':'(new)'}`);
+
+      // 메타 업로드
+      const meta = {
+        id: artId, series, title, year, medium, size, description: desc,
+        image: `/${imgPath}?v=${Date.now()}`
+      };
+      const metaPath = `data/artworks/${artId}.json`;
+      const metaSha = await githubGetShaIfExists(owner, repo, metaPath, token, branch);
+      const metaB64 = btoa(unescape(encodeURIComponent(JSON.stringify(meta, null, 2))));
+      await githubPutContent(owner, repo, metaPath, metaB64, `feat: upsert metadata ${artId}`, token, branch, metaSha);
+      log(`메타 업로드 완료 → ${metaPath} ${metaSha?'(update)':'(new)'}`);
+
+      status($('upStatus'),'✅ 업로드 성공 — 홈에 곧 반영됩니다', 'ok');
+      log('캐시 버스터 쿼리 적용: ' + meta.image);
+      log('Tip: 홈 그리드가 data/artworks/*.json 을 읽도록 되어 있으면 즉시 표시됩니다.');
+    }catch(err){
+      status($('upStatus'),'❌ 업로드 실패', 'bad');
+      log('업로드 오류: ' + err.message);
+    }finally{
+      $('btnUpload').disabled = false;
+    }
+  });
+
+  // 초기화
+  loadLocal();
+})();
+</script>
+</body>
+</html>
