@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
+<script>
+(function(){
+  // Domain auto-sync check
+  const currentHost = window.location.hostname;
+  if (currentHost.includes("dungzak.art")) {
+    fetch("https://dungzakcestlavie.github.io", {method:"HEAD", mode:"no-cors"})
+      .then(() => { console.log("Connected to GitHub Pages"); })
+      .catch(() => {
+        // Redirect to loading page if GitHub not yet synced
+        window.location.replace("loading.html");
+      });
+  }
+})();
+</script>
+  <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>등작 燈酌 DUNGZAK CESTLAVIE — Lightflow Ω.3</title>
