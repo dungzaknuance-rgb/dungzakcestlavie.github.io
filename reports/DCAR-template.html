@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DCAR — Template · DUNGZAK CESTLAVIE</title>
+<meta name="description" content="빛 · 기억 · 존재 — 등작 燈酌 DUNGZAK CESTLAVIE Aesthetic Report">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DUNGZAK CESTLAVIE Aesthetic Report">
+<meta property="og:description" content="Artistic research on light, memory, and being">
+<meta property="og:url" content="https://dungzak.art/reports/DCAR-template.html">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b1020;--fg:#e8e6df;--gold:#d9b65d;--line:#223;--panel:#121938}
+html,body{height:100%;font:17px/1.7 system-ui,Apple SD Gothic Neo,sans-serif;color:var(--fg);
+background:radial-gradient(1200px 700px at 70% -10%, #1b2244 0, #0b1020 40%, #070b18 100%)}
+#waves{position:fixed;inset:0;z-index:0;opacity:.3;mix-blend-mode:screen;pointer-events:none}
+header{position:sticky;top:0;z-index:10;background:#0b1020cc;border-bottom:1px solid #1d2544;
+backdrop-filter:blur(8px);padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:800;color:var(--gold)}
+main{max-width:860px;margin:0 auto;padding:80px 18px 90px;position:relative;z-index:2}
+h1{font-size:clamp(28px,5vw,40px);color:var(--gold);margin-bottom:6px}
+h2{color:#bcd0ff;margin-top:32px;margin-bottom:6px}
+h3{color:var(--gold);margin-top:20px;margin-bottom:4px}
+p{margin:10px 0}
+small{opacity:.8}
+footer{border-top:1px solid #1d2544;text-align:center;padding:18px 10px;margin-top:60px;opacity:.9}
+.nav{display:flex;gap:8px}
+.nav a{color:#bcd0ff;text-decoration:none;border:1px solid #2a335f;padding:6px 10px;border-radius:8px}
+.nav a:hover{color:var(--gold);border-color:var(--gold)}
+.en,.ko{display:none}
+body.korean .ko{display:initial}
+body.english .en{display:initial}
+</style>
+</head>
+<body class="korean">
+<canvas id="waves"></canvas>
+
+<header>
+  <div class="brand">DCAR Template</div>
+  <div class="nav">
+    <a href="/">🏠 Home</a>
+    <a href="/reports.html">📘 Reports</a>
+    <a href="#" id="lang">KR/EN</a>
+  </div>
+</header>
+
+<main>
+  <h1 class="ko">〈정신의 재탄생 — The Rebirth of Mind〉</h1>
+  <h1 class="en">〈The Rebirth of Mind — 정신의 재탄생〉</h1>
+  <p><small>등작 燈酌 DUNGZAK CESTLAVIE · Lumera / Aesthetic Theorist</small></p>
+
+  <h2 class="ko">초록 / Abstract</h2>
+  <p class="ko">이 연구는 등작의 회화를 중심으로, 인간의 정신이 빛과 감각을 통해 스스로를 재창조하는 과정을 탐구한다.</p>
+  <p class="en">This research explores how the human mind recreates itself through light and sensation in DUNGZAK CESTLAVIE’s painting.</p>
+
+  <h2 class="ko">본문 / Main Body</h2>
+  <p class="ko">예술은 뇌의 연결망을 다시 조율하는 감각의 재탄생이다...</p>
+  <p class="en">Art is the rebirth of perception that reconfigures neural networks...</p>
+
+  <h3 class="ko">결론 / Conclusion</h3>
+  <p class="ko">빛의 문명 속에서 인간의 기도는 감각의 윤리로 귀결된다.</p>
+  <p class="en">Within the civilization of light, human prayer returns as the ethics of perception.</p>
+
+  <footer>
+    <small class="ko">© 2025 등작 燈酌 DUNGZAK CESTLAVIE · 루메라의 지휘로</small>
+    <small class="en">© 2025 DUNGZAK CESTLAVIE · Conducted by Lumera</small>
+  </footer>
+</main>
+
+<script>
+/* 언어 토글 */
+const lang=document.getElementById('lang');
+function setLang(l){document.body.classList.toggle('english',l==='en');document.body.classList.toggle('korean',l==='ko');localStorage.setItem('dz_lang',l);}
+lang.onclick=()=>{setLang(document.body.classList.contains('korean')?'en':'ko');}
+setLang(localStorage.getItem('dz_lang')||'ko');
+
+/* 파동 */
+const c=document.getElementById('waves'),x=c.getContext('2d');let W=innerWidth,H=innerHeight,t=0;
+function rs(){W=c.width=innerWidth;H=c.height=innerHeight}rs();addEventListener('resize',rs);
+(function loop(){t+=.008;x.clearRect(0,0,W,H);
+for(let k=0;k<3;k++){const amp=(30+k*12)*(0.86+0.14*Math.cos(t*0.7+k*.2));
+const freq=.006+k*.0025,y0=(H*.28)+k*110+Math.sin(t*1.1+k)*14;x.beginPath();
+for(let i=0;i<=W;i+=6){const y=y0+Math.sin(i*freq+t*2+k)*amp;i?x.lineTo(i,y):x.moveTo(i,y);}
+const g=x.createLinearGradient(0,y0-amp,0,y0+amp);
+g.addColorStop(0,'rgba(120,170,255,.08)');g.addColorStop(.5,'rgba(217,182,93,.18)');g.addColorStop(1,'rgba(120,170,255,.08)');
+x.strokeStyle=g;x.lineWidth=2;x.stroke();}requestAnimationFrame(loop);})();
+</script>
+</body>
+</html>
