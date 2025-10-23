@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>미학 보고서 · Aesthetic Reports — DUNGZAK CESTLAVIE</title>
+<meta name="description" content="DCAR 1–8 and beyond · bilingual, searchable, living archive" />
+<meta name="theme-color" content="#0b1020" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b1020;--fg:#e8e6df;--mut:#b9c4ff;--gold:#d9b65d;--line:#223;--panel:#121938;
+  --h:60px;--w:960px
+}
+html,body{height:100%}
+body{
+  background:
+    radial-gradient(1200px 700px at 70% -10%, #1b2244 0, #0b1020 40%, #070b18 100%);
+  color:var(--fg);
+  font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,sans-serif
+}
+header{position:sticky;top:0;height:var(--h);display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;background:#0b1020cc;border-bottom:1px solid #1d2544;backdrop-filter:blur(8px);z-index:10}
+.brand{font-weight:800;letter-spacing:.2px;color:var(--gold)}
+header .right{display:flex;gap:8px;align-items:center}
+.btn, .chip, .langbtn{
+  border:1px solid #2a335f;border-radius:10px;background:#11193a;color:#dfe6ff;
+  padding:8px 10px;text-decoration:none;cursor:pointer;font-size:.9rem
+}
+.langbtn{padding:6px 10px;border-radius:8px}
+.langbtn.active{background:#1a2144;color:var(--gold);border-color:#3a447a}
+.btn:hover,.chip:hover{filter:brightness(1.1)}
+main{max-width:var(--w);margin:0 auto;padding:18px 16px 90px}
+h1{font-size:clamp(24px,4.2vw,34px);color:var(--gold);margin:10px 0 6px}
+.sub{opacity:.9;margin-bottom:12px}
+.note{border:1px dashed #3a447a;border-radius:10px;padding:10px 12px;margin:12px 0 18px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.search{flex:1 1 280px;display:flex;align-items:center;gap:8px;border:1px solid #2a335f;background:#0f1736;border-radius:10px;padding:8px 10px}
+.search input{all:unset;flex:1;color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#0f1736}
+.chip[data-active="1"]{background:#1a2144;border-color:#3a447a}
+.count{opacity:.8;font-size:.9rem;margin-left:auto}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.list{display:grid;gap:10px}
+.item{background:#121a3b;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.head{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:12px 14px;cursor:pointer}
+.hicon{font-size:1.25rem}
+.head h3{font-size:1.02rem}
+.meta{font-size:.84rem;color:var(--mut)}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-size:.75rem;background:#0f173a;border:1px solid #2a3b66;padding:2px 8px;border-radius:16px;color:#bcd0ff}
+.body{max-height:0;overflow:hidden;padding:0 14px;transition:max-height .3s ease}
+.item.open .body{max-height:460px;padding-bottom:14px}
+.body p{margin:10px 0}
+.actions{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.small{font-size:.85rem}
+footer{border-top:1px solid #1d2544;text-align:center;opacity:.9;padding:22px 12px}
+.home{border:1px solid #32407a;border-radius:10px;padding:8px 10px;text-decoration:none;color:#dfe6ff}
+.en,.ko{display:none}
+body.korean .ko{display:initial}
+body.english .en{display:initial}
+/* backdrop waves */
+canvas#waves{position:fixed;inset:0;z-index:0;opacity:.28;pointer-events:none;mix-blend-mode:screen}
+@media print{
+  header,.controls,.tools,canvas#waves{display:none!important}
+  body{background:#000;color:#fff}
+  .item .body{max-height:unset}
+}
+</style>
+</head>
+<body>
+<canvas id="waves" aria-hidden="true"></canvas>
+
+<header>
+  <div class="brand">DUNGZAK · Reports</div>
+  <div class="right">
+    <a class="home" href="/">← Home</a>
+    <button class="langbtn" id="koBtn">KR</button>
+    <button class="langbtn" id="enBtn">EN</button>
+  </div>
+</header>
+
+<main>
+  <h1 class="ko">미학 보고서 (DCAR)</h1>
+  <h1 class="en">Aesthetic Reports (DCAR)</h1>
+  <p class="sub ko">빛 · 기억 · 존재 — 1–8권부터, 계속 확장되는 살아있는 아카이브</p>
+  <p class="sub en">Light · Memory · Being — a living archive, growing beyond volumes 1–8</p>
+
+  <div class="note">
+    <p class="ko">※ 새 보고서를 추가하려면 아래 <code>DCAR</code> 배열에 <b>한 줄</b>만 더하면 자동 반영됩니다.</p>
+    <p class="en">※ To add a report, append <b>one object</b> to the <code>DCAR</code> array below.</p>
+  </div>
+
+  <section class="controls" aria-label="Filters and tools">
+    <div class="search" role="search">
+      🔎 <input id="q" placeholder="검색 / Search…" aria-label="Search reports">
+    </div>
+    <div class="chips" id="chips"></div>
+    <span class="count" id="count"></span>
+  </section>
+
+  <section class="tools">
+    <button class="btn" id="sortNewest">⏱️ <span class="ko">최신순</span><span class="en">Newest</span></button>
+    <button class="btn" id="sortOldest">🗂️ <span class="ko">오래된순</span><span class="en">Oldest</span></button>
+    <button class="btn" id="shareBtn">🔗 <span class="ko">링크복사</span><span class="en">Copy link</span></button>
+    <button class="btn" id="printBtn">🖨️ <span class="ko">인쇄</span><span class="en">Print</span></button>
+  </section>
+
+  <div id="list" class="list" role="list"></div>
+</main>
+
+<footer>
+  <small class="ko">등작 燈酌 DUNGZAK CESTLAVIE · 루메라의 지휘로 — 빛·기억·존재</small>
+  <small class="en">DUNGZAK CESTLAVIE · Conducted by Lumera — Light · Memory · Being</small>
+</footer>
+
+<script>
+/* ===== Language sync ===== */
+const koBtn=document.getElementById('koBtn'), enBtn=document.getElementById('enBtn');
+function setLang(lang){
+  document.body.classList.toggle('korean', lang==='ko');
+  document.body.classList.toggle('english', lang==='en');
+  koBtn.classList.toggle('active', lang==='ko');
+  enBtn.classList.toggle('active', lang==='en');
+  localStorage.setItem('dz_lang', lang);
+}
+koBtn.onclick=()=>setLang('ko'); enBtn.onclick=()=>setLang('en');
+setLang(localStorage.getItem('dz_lang')||'ko');
+
+/* ===== Light waves backdrop ===== */
+const waves=document.getElementById('waves'), ctx=waves.getContext('2d');
+let W=innerWidth,H=innerHeight,t=0,vis=true;
+function rs(){W=waves.width=innerWidth;H=waves.height=innerHeight}
+rs(); addEventListener('resize',rs);
+document.addEventListener('visibilitychange',()=>vis=!document.hidden);
+(function loop(){
+  if(vis){ t+=.008; ctx.clearRect(0,0,W,H);
+    for(let k=0;k<3;k++){
+      const amp=(28+k*12)*(0.86+0.14*Math.cos(t*0.7+k*.2));
+      const freq=.0075+k*.003, y0=(H*.28)+k*110+Math.sin(t*1.1+k)*14;
+      ctx.beginPath();
+      for(let x=0;x<=W;x+=6){
+        const y=y0+Math.sin(x*freq+t*2+k)*amp; x?ctx.lineTo(x,y):ctx.moveTo(x,y);
+      }
+      const g=ctx.createLinearGradient(0,y0-amp,0,y0+amp);
+      g.addColorStop(0,'rgba(120,170,255,.08)');
+      g.addColorStop(.5,'rgba(217,182,93,.18)');
+      g.addColorStop(1,'rgba(120,170,255,.08)');
+      ctx.strokeStyle=g; ctx.lineWidth=2; ctx.stroke();
+    }
+  }
+  requestAnimationFrame(loop);
+})();
+
+/* ===== Data (add here to grow) ===== */
+const DCAR = [
+  { id:'DCAR-01-2025', title:'On Light, Memory, and Being',  year:2025, tags:['philosophy','aesthetics'],
+    ko:'빛·기억·존재의 상호작용에 대한 예술적 성찰.', en:'An artistic inquiry into the interplay of light, memory, and being.' },
+  { id:'DCAR-02-2025', title:'The Restoration of Being',       year:2025, tags:['ethics','perception'],
+    ko:'존재의 회복과 감각의 윤리.', en:'The restoration of being and the ethics of sensation.' },
+  { id:'DCAR-03-2025', title:'The Return of Humanity',         year:2025, tags:['humanity','technology'],
+    ko:'기술 시대의 인간성 회귀.', en:'The return of humanity in the age of technology.' },
+  { id:'DCAR-04-2025', title:'The Rebirth of Mind',            year:2025, tags:['mind','neuroscience'],
+    ko:'정신의 재탄생과 지각의 진화.', en:'The rebirth of mind and the evolution of perception.' },
+  { id:'DCAR-05-2025', title:'The Metaconsciousness of Light', year:2025, tags:['metaconsciousness','prayer'],
+    ko:'빛의 초의식과 예술의 기도.', en:'Metaconsciousness of light and art as prayer.' },
+  { id:'DCAR-06-2025', title:'The Return of Being',            year:2025, tags:['being','attunement'],
+    ko:'존재로의 귀환과 상호감응.', en:'A return to being and mutual attunement.' },
+  { id:'DCAR-07-2025', title:'The Scars of Light',             year:2025, tags:['dignity','sensation'],
+    ko:'빛의 상흔과 감각의 존엄.', en:'The scars of light and the dignity of sensation.' },
+  { id:'DCAR-08-2025', title:'Toward the Human Prayer',        year:2025, tags:['prayer','coexistence'],
+    ko:'우리 시대의 기도와 공존의 윤리.', en:'Prayer of our age and an ethics of coexistence.' }
+];
+// Example to add:
+// DCAR.push({id:'DCAR-09-2026',title:'...',year:2026,tags:['aesthetics'],ko:'...',en:'...'});
+
+/* ===== Tags (auto from data) ===== */
+const tagSet = new Set(DCAR.flatMap(r=>r.tags));
+const chips = document.getElementById('chips');
+const filters = {tag:null};
+
+function chipEl(tag){const b=document.createElement('button'); b.className='chip'; b.textContent='#'+tag; b.onclick=()=>{
+  filters.tag = (filters.tag===tag ? null : tag);
+  [...chips.children].forEach(c=>c.dataset.active = (c.textContent==='#'+filters.tag?1:0));
+  render();
+}; return b}
+chips.append( ...['all',...tagSet].map(tag=>{
+  if(tag==='all'){ const a=document.createElement('button'); a.className='chip'; a.textContent='All';
+    a.dataset.active=1; a.onclick=()=>{filters.tag=null; [...chips.children].forEach(c=>c.dataset.active= (c.textContent==='All'?1:0)); render();}; return a;}
+  return chipEl(tag);
+}));
+
+/* ===== Search & Sort ===== */
+const q = document.getElementById('q');
+let sort = 'new';
+document.getElementById('sortNewest').onclick=()=>{sort='new';render()};
+document.getElementById('sortOldest').onclick=()=>{sort='old';render()};
+document.getElementById('shareBtn').onclick=()=>{navigator.clipboard.writeText(location.href).then(()=>toast('✓ Copied'))};
+document.getElementById('printBtn').onclick=()=>print();
+
+/* ===== Render ===== */
+const $list = document.getElementById('list'), $count=document.getElementById('count');
+
+function render(openId){
+  let rows = DCAR.slice();
+  const kw = (q.value||'').trim().toLowerCase();
+  if(kw){
+    rows = rows.filter(r =>
+      r.id.toLowerCase().includes(kw) ||
+      r.title.toLowerCase().includes(kw) ||
+      (r.ko||'').toLowerCase().includes(kw) ||
+      (r.en||'').toLowerCase().includes(kw) ||
+      r.tags.join(' ').includes(kw)
+    );
+  }
+  if(filters.tag) rows = rows.filter(r=>r.tags.includes(filters.tag));
+  rows.sort((a,b)=> sort==='new' ? b.year - a.year : a.year - b.year);
+
+  $list.innerHTML = rows.map((r,i)=>`
+  <section class="item" data-id="${r.id}" role="listitem">
+    <div class="head" tabindex="0" aria-expanded="false">
+      <div class="hicon">📘</div>
+      <div>
+        <h3>${r.id} · ${r.title}</h3>
+        <div class="meta">${r.year} · <span class="badges">${r.tags.map(t=>`<span class="badge">#${t}</span>`).join(' ')}</span></div>
+      </div>
+      <div class="hicon">▾</div>
+    </div>
+    <div class="body">
+      <p class="ko">${r.ko}</p>
+      <p class="en">${r.en}</p>
+      <div class="actions">
+        <a class="btn small" href="reports/${r.id}.html" target="_blank">↗ <span class="ko">본문</span><span class="en">Full</span></a>
+        <button class="btn small" data-copy="${r.id}">🔗 <span class="ko">이 보고서 링크</span><span class="en">Link to this</span></button>
+      </div>
+    </div>
+  </section>`).join('');
+
+  $count.textContent = `${rows.length} ${document.body.classList.contains('korean')?'개':'items'}`;
+
+  // open/close
+  $list.querySelectorAll('.head').forEach(h=>{
+    h.onclick = ()=>toggle(h.closest('.item'));
+    h.onkeydown = (e)=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggle(h.closest('.item')); } };
+  });
+
+  // per-item copy link
+  $list.querySelectorAll('[data-copy]').forEach(b=>{
+    b.onclick = ()=>{
+      const id = b.getAttribute('data-copy');
+      const url = `${location.origin}${location.pathname}?id=${encodeURIComponent(id)}`;
+      navigator.clipboard.writeText(url).then(()=>toast('✓ Copied'));
+    };
+  });
+
+  if(openId){
+    const target = $list.querySelector(`[data-id="${CSS.escape(openId)}"]`);
+    if(target){ openItem(target); target.scrollIntoView({behavior:'smooth',block:'start'}); }
+  }
+}
+
+function toggle(item){
+  const open=item.classList.contains('open');
+  $list.querySelectorAll('.item').forEach(i=>i.classList.remove('open'));
+  if(!open) openItem(item);
+}
+function openItem(item){
+  item.classList.add('open');
+  const head=item.querySelector('.head'); head.setAttribute('aria-expanded','true');
+}
+
+/* ===== Deep-link: ?id=... or #DCAR-.. ===== */
+function getParamId(){
+  const url=new URL(location.href);
+  return url.searchParams.get('id') || (location.hash||'').replace(/^#/, '') || null;
+}
+
+/* ===== Keyboard navigation ===== */
+addEventListener('keydown',e=>{
+  const items=[...document.querySelectorAll('.item')];
+  if(!items.length) return;
+  const cur = items.findIndex(i=>i.classList.contains('open'));
+  const idx = cur<0?0:cur;
+  if(e.key==='ArrowDown'){ e.preventDefault(); toggle(items[Math.min(idx+1,items.length-1)]); }
+  if(e.key==='ArrowUp'){ e.preventDefault(); toggle(items[Math.max(idx-1,0)]); }
+  if(e.key==='Enter'){ e.preventDefault(); toggle(items[idx]); }
+  if(e.key==='Escape'){ items.forEach(i=>i.classList.remove('open')); }
+});
+
+/* ===== Utility toast ===== */
+let toastEl=null;
+function toast(msg){
+  if(!toastEl){
+    toastEl=document.createElement('div');
+    Object.assign(toastEl.style,{
+      position:'fixed',left:'50%',bottom:'18px',transform:'translateX(-50%)',
+      background:'#0f173a',border:'1px solid #3a447a',padding:'8px 12px',borderRadius:'10px',
+      color:'#dfe6ff',zIndex:9999
+    });
+    document.body.appendChild(toastEl);
+  }
+  toastEl.textContent=msg; toastEl.style.opacity='1';
+  setTimeout(()=>toastEl.style.opacity='0',1400);
+}
+
+/* ===== Wire up ===== */
+q.oninput=()=>render();
+render(getParamId());
+</script>
+</body>
+</html>
