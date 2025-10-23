@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>등작 燈酌 DUNGZAK CESTLAVIE — Domain Sync</title>
+<style>
+  html,body{
+    height:100%;margin:0;padding:0;
+    background:radial-gradient(circle at 50% 40%, #1a1e38, #0b1020);
+    color:#eaeaea;font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,sans-serif;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+  }
+  .wrap{max-width:90%;line-height:1.6}
+  h1{color:#d9b65d;font-size:1.4rem;margin-bottom:10px;letter-spacing:0.05em}
+  p{opacity:.85;font-size:.95rem;margin:6px 0}
+  .en{color:#9fb3ff;font-style:italic;margin-top:10px}
+  .dot{animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:0.3}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🌌 등작 燈酌 DUNGZAK CESTLAVIE</h1>
+    <p>도메인이 우주망을 따라 전파되고 있습니다<span class="dot">…</span></p>
+    <p>잠시 후 <strong>빛의 미학 — Lightflow Ω</strong>이 깨어납니다.</p>
+    <p class="en">The domain signal is synchronizing through the cosmic web<span class="dot">…</span></p>
+    <p class="en">Please wait — Lightflow Ω will awaken soon.</p>
+  </div>
+
+<script>
+// Domain propagation auto-check
+setTimeout(()=>{
+  fetch("https://dungzakcestlavie.github.io", {method:"HEAD", mode:"no-cors"})
+  .then(()=>{ window.location.replace("https://dungzakcestlavie.github.io"); })
+  .catch(()=>{ console.log("Still propagating…"); });
+}, 5000);
+</script>
+</body>
+</html>
