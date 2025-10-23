@@ -12,41 +12,47 @@
 <link rel="icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><rect width="96" height="96" rx="20" fill="%230b1020"/><path d="M48 16c10 0 18 8 18 18 0 11-9 18-18 30-9-12-18-19-18-30 0-10 8-18 18-18z" fill="%23d9b65d"/><circle cx="48" cy="34" r="6" fill="%23e8e6df"/></svg>'>
 
 <style>
-/* ==== Base =============================================================== */
+/* ===== Base layout & typography ===== */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#0b1020;--fg:#e8e6df;--gold:#d9b65d;--panel:#121938;--line:#223;--max:1200px;--h:56px}
 html,body{height:100%}
 body{
   background:radial-gradient(1200px 700px at 70% -10%, #1b2244 0, #0b1020 40%, #070b18 100%);
-  color:var(--fg); font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,sans-serif;
+  color:var(--fg);
+  font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,sans-serif;
   letter-spacing:.2px; overflow-x:hidden;
 }
 canvas{position:fixed;inset:0;pointer-events:none}
 #waves{z-index:0;opacity:.33}
 #trail{z-index:1;opacity:.55;mix-blend-mode:screen}
 
-/* ==== Mobile-safe Header (brand always visible) ========================= */
+/* ===== Header (mobile-safe) ===== */
 header{
-  position:fixed; left:0; right:0; top:0; z-index:10;
-  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
-  background:#0b1020cc; border-bottom:1px solid #1d2544; backdrop-filter:blur(8px);
+  position:fixed;top:0;left:0;right:0;z-index:10;
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;
+  background:#0b1020cc;border-bottom:1px solid #1d2544;backdrop-filter:blur(8px);
   padding:calc(8px + env(safe-area-inset-top)) 12px 8px;
 }
 .brand{
-  font-weight:800; color:var(--gold);
-  font-size:clamp(16px, 5vw, 22px);
+  font-weight:800;color:var(--gold);
+  font-size:clamp(16px,5vw,22px);
+  flex:1 1 100%;
+  text-align:center;
   line-height:1.2;
-  flex:1 1 100%; /* 모바일에서 브랜드가 1행 전체 */
 }
-.lang{display:flex;align-items:center;gap:8px;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.lang::-webkit-scrollbar{display:none}
-.lang a,.lang button{
-  all:unset; display:inline-block; cursor:pointer; white-space:nowrap;
-  padding:6px 10px; border:1px solid #2a335f; border-radius:8px; color:#bcd0ff;
+header nav{
+  display:flex;align-items:center;gap:8px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;width:100%;justify-content:center;
 }
-.lang button.active,.lang a:hover{background:#1a2144;color:var(--gold);border-color:var(--gold)}
+header nav::-webkit-scrollbar{display:none}
+header nav a,.lang button{
+  all:unset;cursor:pointer;padding:6px 10px;border:1px solid #2a335f;border-radius:8px;
+  color:#bcd0ff;font-size:.9rem;white-space:nowrap
+}
+header nav a:hover,.lang button.active{background:#1a2144;color:var(--gold);border-color:var(--gold)}
 
-/* ==== Layout & Sections ================================================= */
+/* ===== Layout sections ===== */
 main{position:relative;z-index:2}
 section{max-width:var(--max);margin:auto;padding:calc(var(--h) + 28px + env(safe-area-inset-top)) 16px 64px}
 .hero{min-height:74vh;display:grid;place-items:center;text-align:center}
@@ -54,7 +60,8 @@ section{max-width:var(--max);margin:auto;padding:calc(var(--h) + 28px + env(safe
 .hero p{opacity:.9}
 .cta{display:inline-block;margin-top:14px;padding:10px 14px;border:1px solid #3a447a;border-radius:12px;color:var(--fg);text-decoration:none}
 
-.tabs{display:flex;flex-wrap:nowrap;gap:8px;justify-content:flex-start;margin:0 16px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* ===== Tabs & grid ===== */
+.tabs{display:flex;flex-wrap:nowrap;gap:8px;margin:0 16px 14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .tabs::-webkit-scrollbar{display:none}
 .tab{padding:8px 12px;border-radius:18px;border:1px solid var(--line);background:#11193a;color:#bcd0ff;font-size:.9rem;cursor:pointer;white-space:nowrap}
 .tab.active{background:linear-gradient(180deg,var(--gold),#e5d79d);color:#0a0f2c;border-color:#d6b65f}
@@ -68,17 +75,17 @@ section{max-width:var(--max);margin:auto;padding:calc(var(--h) + 28px + env(safe
 .card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;filter:brightness(1.03)}
 .card .meta{font-size:.85rem;color:#cbd6ff;padding:8px 10px;border-top:1px solid #1d2a55}
 
+/* ===== Footer ===== */
+footer{border-top:1px solid #1d2544;text-align:center;padding:24px 12px;opacity:.9}
 .note{max-width:var(--max);margin:0 auto 8px;padding:10px 14px;border:1px dashed #3a447a;border-radius:10px}
 .note code{background:#1a2144;padding:2px 6px;border-radius:6px}
 
-footer{border-top:1px solid #1d2544;opacity:.9;text-align:center;padding:22px 12px}
-
-/* Bilingual visibility */
+/* ===== Bilingual toggle ===== */
 .en,.ko{display:none}
 body.korean .ko{display:initial}
 body.english .en{display:initial}
 
-/* Lightbox */
+/* ===== Lightbox ===== */
 #lightbox{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.88);
   opacity:0;pointer-events:none;transition:.25s;z-index:12}
 #lightbox.open{opacity:1;pointer-events:auto}
@@ -99,60 +106,48 @@ body.english .en{display:initial}
 <canvas id="trail" aria-hidden="true"></canvas>
 
 <header>
-  <div class="brand">DUNGZAK CESTLAVIE · Lightflow Ω.3</div>
-  <nav class="lang" aria-label="Navigation & Language">
-    <a href="#poem">Poem</a>
+  <div class="brand">등작 燈酌 DUNGZAK CESTLAVIE</div>
+  <nav class="lang">
     <a href="#bio">Bio</a>
     <a href="#works">Works</a>
     <a href="/reports.html">Reports</a>
-    <button id="koBtn" class="active" aria-pressed="true">KR</button>
-    <button id="enBtn" aria-pressed="false">EN</button>
+    <button id="koBtn" class="active">KR</button>
+    <button id="enBtn">EN</button>
   </nav>
 </header>
 
 <main>
-  <!-- Hero -->
-  <section class="hero" id="poem">
+  <section class="hero">
     <div>
       <h1 class="ko">빛 · 기억 · 존재</h1>
       <h1 class="en">Light · Memory · Being</h1>
-      <p class="ko">루메라의 지휘로 — Dungzak Cestlavie</p>
-      <p class="en">Conducted by Lumera — Dungzak Cestlavie</p>
+      <p class="ko">루메라의 지휘로 — 등작 燈酌 DUNGZAK CESTLAVIE</p>
+      <p class="en">Conducted by Lumera — DUNGZAK CESTLAVIE</p>
       <a class="cta" href="#works">Gallery</a>
     </div>
   </section>
 
-  <!-- Bio -->
   <section id="bio">
-    <div class="ko">
-      <h2>작가 소개</h2>
-      <p>빛의 철학과 인간의 감정을 화폭에 담는 현대 예술가. DCAR(1–8)로 철학·뇌과학·예술을 융합한다.</p>
-    </div>
-    <div class="en">
-      <h2>Artist Bio</h2>
-      <p>A contemporary artist of the philosophy of light. The DCAR series (1–8) unites philosophy, neuroscience, and art.</p>
-    </div>
+    <div class="ko"><h2>작가 소개</h2><p>빛의 철학과 인간의 감정을 화폭에 담는 현대 예술가. DCAR 시리즈(1–8)로 철학·뇌과학·예술을 융합한다.</p></div>
+    <div class="en"><h2>Artist Bio</h2><p>A contemporary artist exploring the philosophy of light and emotion. The DCAR series (1–8) unites philosophy, neuroscience, and art.</p></div>
   </section>
 
-  <!-- Works -->
   <section id="works">
-    <div class="tabs" role="tablist" aria-label="Art sections">
+    <div class="tabs" role="tablist">
       <button class="tab active" data-key="light">Ⅰ Light & Memory</button>
       <button class="tab" data-key="prayer">Ⅱ Human Prayer</button>
       <button class="tab" data-key="rebirth">Ⅲ Rebirth</button>
       <button class="tab" data-key="exist">Ⅳ Existence</button>
       <button class="tab" data-key="cosmos">Ⅴ Cosmos</button>
     </div>
-
     <div id="panel-light" class="tabpanel active"></div>
     <div id="panel-prayer" class="tabpanel"></div>
     <div id="panel-rebirth" class="tabpanel"></div>
     <div id="panel-exist" class="tabpanel"></div>
     <div id="panel-cosmos" class="tabpanel"></div>
-
     <div class="note">
-      <span class="ko">※ 실제 작품 이미지는 <code>works/{섹션}/{번호}.jpg</code> 로 올리면 자동 표시됩니다.</span>
-      <span class="en">※ Put real images at <code>works/{section}/{index}.jpg</code> to show automatically.</span>
+      <span class="ko">※ 작품 이미지는 <code>works/{섹션}/{번호}.jpg</code> 경로로 올리면 자동 표시됩니다.</span>
+      <span class="en">※ Artwork images auto-load from <code>works/{section}/{index}.jpg</code>.</span>
     </div>
   </section>
 </main>
@@ -164,102 +159,54 @@ body.english .en{display:initial}
 
 <!-- Lightbox -->
 <div id="lightbox" aria-hidden="true">
-  <div class="lb-btn lb-prev" aria-label="Previous">❮</div>
+  <div class="lb-btn lb-prev">❮</div>
   <img alt="Artwork view">
-  <div class="lb-btn lb-next" aria-label="Next">❯</div>
-  <div class="lb-close" aria-label="Close">✕</div>
+  <div class="lb-btn lb-next">❯</div>
+  <div class="lb-close">✕</div>
   <div class="lb-cap" id="lbCap"></div>
 </div>
 
 <script>
-/* ===== Language toggle ===== */
-const koBtn=document.getElementById('koBtn'), enBtn=document.getElementById('enBtn');
-function setLang(lang){
-  document.body.classList.toggle('korean', lang==='ko');
-  document.body.classList.toggle('english', lang==='en');
-  koBtn.classList.toggle('active', lang==='ko'); enBtn.classList.toggle('active', lang==='en');
-  koBtn.setAttribute('aria-pressed', lang==='ko'); enBtn.setAttribute('aria-pressed', lang==='en');
-  localStorage.setItem('dz_lang', lang);
-}
-koBtn.addEventListener('click',()=>setLang('ko'));
-enBtn.addEventListener('click',()=>setLang('en'));
-setLang(localStorage.getItem('dz_lang')||'ko');
+const koBtn=document.getElementById('koBtn'),enBtn=document.getElementById('enBtn');
+function setLang(l){document.body.classList.toggle('english',l==='en');document.body.classList.toggle('korean',l==='ko');
+koBtn.classList.toggle('active',l==='ko');enBtn.classList.toggle('active',l==='en');localStorage.setItem('dz_lang',l);}
+koBtn.onclick=()=>setLang('ko');enBtn.onclick=()=>setLang('en');setLang(localStorage.getItem('dz_lang')||'ko');
 
-/* ===== Waves & Pointer trail ===== */
-const waves=document.getElementById('waves'), w=waves.getContext('2d');
-const trail=document.getElementById('trail'), t=trail.getContext('2d');
-function rs(){waves.width=trail.width=innerWidth;waves.height=trail.height=innerHeight}
-rs(); addEventListener('resize',rs);
-let time=0, px=innerWidth/2, py=innerHeight/2, tx=px, ty=py, vis=true;
-document.addEventListener('visibilitychange',()=>{vis=!document.hidden});
-(function loopW(){ if(vis){ time+=.008; w.clearRect(0,0,waves.width,waves.height);
-  for(let k=0;k<3;k++){ const amp=(40+k*16)*(0.86+0.14*Math.cos(time*0.7+k*.2));
-    const freq=.006+k*.0025, y0=(waves.height*.3)+k*110+Math.sin(time*1.2+k)*18;
-    w.beginPath(); for(let x=0;x<=waves.width;x+=6){ const y=y0+Math.sin(x*freq+time*2+k)*amp; x? w.lineTo(x,y):w.moveTo(x,y); }
-    const g=w.createLinearGradient(0,y0-amp,0,y0+amp);
-    g.addColorStop(0,'rgba(120,170,255,.08)'); g.addColorStop(.5,'rgba(217,182,93,.18)'); g.addColorStop(1,'rgba(120,170,255,.08)');
-    w.strokeStyle=g; w.lineWidth=2; w.stroke(); }
-} requestAnimationFrame(loopW); })();
-(function loopT(){ if(vis){
-  const dx=(tx-px)*.15, dy=(ty-py)*.15; px+=dx; py+=dy;
-  t.fillStyle='rgba(0,0,0,.12)'; t.fillRect(0,0,trail.width,trail.height);
-  const r=90+Math.min(Math.hypot(dx,dy)*140,220);
-  const g=t.createRadialGradient(px,py,0,px,py,r); g.addColorStop(0,'rgba(120,170,255,.30)'); g.addColorStop(1,'rgba(120,170,255,0)');
-  t.fillStyle=g; t.beginPath(); t.arc(px,py,r,0,Math.PI*2); t.fill();
-} requestAnimationFrame(loopT); })();
+const waves=document.getElementById('waves'),w=waves.getContext('2d');
+const trail=document.getElementById('trail'),t=trail.getContext('2d');
+function rs(){waves.width=trail.width=innerWidth;waves.height=trail.height=innerHeight}rs();addEventListener('resize',rs);
+let time=0,px=innerWidth/2,py=innerHeight/2,tx=px,ty=py,vis=true;document.addEventListener('visibilitychange',()=>vis=!document.hidden);
+(function loop(){if(vis){time+=.008;w.clearRect(0,0,waves.width,waves.height);
+for(let k=0;k<3;k++){const amp=(40+k*16)*(0.86+0.14*Math.cos(time*0.7+k*.2));const freq=.006+k*.0025,y0=(waves.height*.3)+k*110+Math.sin(time*1.2+k)*18;
+w.beginPath();for(let x=0;x<=waves.width;x+=6){const y=y0+Math.sin(x*freq+time*2+k)*amp;x? w.lineTo(x,y):w.moveTo(x,y);}
+const g=w.createLinearGradient(0,y0-amp,0,y0+amp);g.addColorStop(0,'rgba(120,170,255,.08)');g.addColorStop(.5,'rgba(217,182,93,.18)');g.addColorStop(1,'rgba(120,170,255,.08)');
+w.strokeStyle=g;w.lineWidth=2;w.stroke();}}requestAnimationFrame(loop);})();
+(function trailLoop(){if(vis){const dx=(tx-px)*.15,dy=(ty-py)*.15;px+=dx;py+=dy;t.fillStyle='rgba(0,0,0,.12)';t.fillRect(0,0,trail.width,trail.height);
+const r=90+Math.min(Math.hypot(dx,dy)*140,220);const g=t.createRadialGradient(px,py,0,px,py,r);
+g.addColorStop(0,'rgba(120,170,255,.30)');g.addColorStop(1,'rgba(120,170,255,0)');
+t.fillStyle=g;t.beginPath();t.arc(px,py,r,0,Math.PI*2);t.fill();}requestAnimationFrame(trailLoop);})();
 addEventListener('mousemove',e=>{tx=e.clientX;ty=e.clientY},{passive:true});
 addEventListener('touchmove',e=>{const p=e.touches[0];tx=p.clientX;ty=p.clientY},{passive:true});
 
-/* ===== Gallery (5×20) ===== */
-const sections=[
-  {key:'light',  title:'Light & Memory'},
-  {key:'prayer', title:'Human Prayer'},
-  {key:'rebirth',title:'Rebirth'},
-  {key:'exist',  title:'Existence'},
-  {key:'cosmos', title:'Cosmos'}
-];
-function cardHTML(sec,i){return `
-<article class="card" tabindex="0" data-sec="${sec.key}" data-idx="${i}">
-  <img loading="lazy" data-src="works/${sec.key}/${i}.jpg" alt="${sec.title} ${i}">
-  <div class="meta">${sec.title} · ${i}</div>
-</article>`}
-function renderPanel(sec){
-  const p=document.getElementById('panel-'+sec.key);
-  p.innerHTML=`<div class="grid">${Array.from({length:20},(_,i)=>cardHTML(sec,i+1)).join('')}</div>`;
-}
-sections.forEach(renderPanel);
-
-/* lazy load */
-const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const img=e.target,src=img.getAttribute('data-src');if(src){img.src=src;img.removeAttribute('data-src')} io.unobserve(img)}})},{rootMargin:'250px'});
-function observe(key){document.querySelectorAll(`#panel-${key} img[data-src]`).forEach(img=>io.observe(img))}
-observe('light');
-
-/* tabs */
+const sections=[{key:'light',title:'Light & Memory'},{key:'prayer',title:'Human Prayer'},{key:'rebirth',title:'Rebirth'},{key:'exist',title:'Existence'},{key:'cosmos',title:'Cosmos'}];
+function cardHTML(s,i){return`<article class="card"><img loading="lazy" data-src="works/${s.key}/${i}.jpg" alt="${s.title} ${i}"><div class="meta">${s.title} · ${i}</div></article>`}
+function render(s){document.getElementById('panel-'+s.key).innerHTML=`<div class="grid">${Array.from({length:20},(_,i)=>cardHTML(s,i+1)).join('')}</div>`}
+sections.forEach(render);
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const img=e.target,src=img.getAttribute('data-src');if(src){img.src=src;img.removeAttribute('data-src')}io.unobserve(img)}})},{rootMargin:'250px'});
+function observe(k){document.querySelectorAll(`#panel-${k} img[data-src]`).forEach(i=>io.observe(i))}observe('light');
 const tabs=[...document.querySelectorAll('.tab')];
-tabs.forEach(b=>b.addEventListener('click',()=>{
-  tabs.forEach(x=>x.classList.remove('active')); b.classList.add('active');
-  document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
-  const key=b.dataset.key; document.getElementById('panel-'+key).classList.add('active'); observe(key);
-}));
+tabs.forEach(b=>b.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('active'));b.classList.add('active');
+document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+const k=b.dataset.key;document.getElementById('panel-'+k).classList.add('active');observe(k)}));
 
-/* ===== Lightbox ===== */
-const lb=document.getElementById('lightbox'), lbImg=lb.querySelector('img'), cap=document.getElementById('lbCap');
-const prev=lb.querySelector('.lb-prev'), next=lb.querySelector('.lb-next'), closeBtn=lb.querySelector('.lb-close');
+const lb=document.getElementById('lightbox'),lbImg=lb.querySelector('img'),cap=document.getElementById('lbCap');
+const prev=lb.querySelector('.lb-prev'),next=lb.querySelector('.lb-next'),closeBtn=lb.querySelector('.lb-close');
 let cur={key:'light',i:1};
-document.addEventListener('click',e=>{
-  const card=e.target.closest('.card'); if(!card) return;
-  cur.key=card.dataset.sec; cur.i=parseInt(card.dataset.idx,10);
-  lbImg.src=`works/${cur.key}/${cur.i}.jpg`; cap.textContent=`${cur.key} · ${cur.i}`;
-  lb.classList.add('open'); lb.setAttribute('aria-hidden','false');
-});
-function step(d){ let i=cur.i+d; if(i<1)i=20; if(i>20)i=1; cur.i=i; lbImg.src=`works/${cur.key}/${i}.jpg`; cap.textContent=`${cur.key} · ${i}`;}
-prev.addEventListener('click',()=>step(-1)); next.addEventListener('click',()=>step(1));
-closeBtn.addEventListener('click',()=>{lb.classList.remove('open'); lb.setAttribute('aria-hidden','true');});
-lb.addEventListener('click',e=>{if(e.target===lb) closeBtn.click();});
-addEventListener('keydown',e=>{if(!lb.classList.contains('open')) return; if(e.key==='Escape') closeBtn.click(); if(e.key==='ArrowLeft') step(-1); if(e.key==='ArrowRight') step(1);});
-
-/* start observing initial panel */
-document.querySelectorAll('#panel-light img[data-src]').forEach(img=>io.observe(img));
+document.addEventListener('click',e=>{const c=e.target.closest('.card');if(!c)return;cur.key=c.querySelector('img').src.split('/')[4];cur.i=1;
+lbImg.src=c.querySelector('img').src;cap.textContent=cur.key;lb.classList.add('open');});
+function step(d){let i=cur.i+d;if(i<1)i=20;if(i>20)i=1;lbImg.src=`works/${cur.key}/${i}.jpg`;cap.textContent=`${cur.key} · ${i}`}
+prev.onclick=()=>step(-1);next.onclick=()=>step(1);closeBtn.onclick=()=>lb.classList.remove('open');
+lb.onclick=e=>{if(e.target===lb)lb.classList.remove('open')};
 </script>
 </body>
 </html>
