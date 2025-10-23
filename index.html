@@ -42,12 +42,21 @@ section{max-width:var(--max);margin:auto;padding:calc(var(--h)+24px) 16px 64px}
 .card{background:#121a3b;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;filter:brightness(1.03)}
 .card .meta{font-size:.85rem;color:#cbd6ff;padding:8px 10px;border-top:1px solid #1d2a55}
+
+/* Contact / Reports icon */
+.social{display:flex;justify-content:center;gap:24px;margin:32px 0 8px;flex-wrap:wrap}
+.social a{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:#b7ccff;font-size:2rem;
+  transition:transform .25s ease,color .25s ease,text-shadow .25s ease}
+.social a span{font-size:.85rem;letter-spacing:.05em;margin-top:4px;font-weight:300;opacity:.9}
+.social a:hover{color:var(--gold);transform:translateY(-3px) scale(1.1);text-shadow:0 0 10px rgba(217,182,93,.6)}
+
 footer{border-top:1px solid #1d2544;opacity:.9;text-align:center;padding:22px 12px}
 .note{max-width:var(--max);margin:0 auto 8px;padding:10px 14px;border:1px dashed #3a447a;border-radius:10px}
 .note code{background:#1a2144;padding:2px 6px;border-radius:6px}
 .en,.ko{display:none}
 body.korean .ko{display:initial}
 body.english .en{display:initial}
+
 /* Lightbox */
 #lightbox{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.88);
   opacity:0;pointer-events:none;transition:.25s;z-index:5}
@@ -106,6 +115,13 @@ body.english .en{display:initial}
       <span class="en">※ Put real images at <code>works/{section}/{index}.jpg</code> to show automatically.</span>
     </div>
   </section>
+
+  <!-- Contact / Reports icon (본문과 푸터 사이) -->
+  <section id="contact" class="social">
+    <a href="reports.html" title="미학 보고서 / Aesthetic Reports">
+      📘 <span>Reports</span>
+    </a>
+  </section>
 </main>
 
 <footer>
@@ -136,7 +152,7 @@ koBtn.addEventListener('click',()=>setLang('ko'));
 enBtn.addEventListener('click',()=>setLang('en'));
 setLang(localStorage.getItem('dz_lang')||'ko');
 
-/* ===== Decorative waves & pointer trail (no external deps) ===== */
+/* ===== Decorative waves & pointer trail ===== */
 const waves=document.getElementById('waves'), w=waves.getContext('2d');
 const trail=document.getElementById('trail'), t=trail.getContext('2d');
 function rs(){waves.width=trail.width=innerWidth; waves.height=trail.height=innerHeight}
